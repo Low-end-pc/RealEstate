@@ -1,0 +1,2567 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aventine | Premier Asset Stewardship</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0f1115',      // Deepest charcoal/black for dark mode vibes
+                            darker: '#0a0a0c',
+                            light: '#ffffff',     // Pure white for sharp contrast
+                            offwhite: '#f9f9f9',  // Slight off-white for editorial sections
+                            accent: '#c5a880',    // Classic gold/sand
+                            muted: '#737373',
+                            border: '#e5e5e5'
+                        }
+                    },
+                    boxShadow: {
+                        'elegant': '0 20px 40px -15px rgba(0, 0, 0, 0.1)',
+                        'float': '0 30px 60px -20px rgba(0, 0, 0, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base Styles */
+        body {
+            background-color: #ffffff;
+            color: #0f1115;
+            overflow-x: hidden;
+        }
+
+        ::selection { background-color: #c5a880; color: #fff; }
+
+        /* --- SPA Page Transitions --- */
+        .page-section {
+            display: none;
+            opacity: 0;
+            animation: fadeInPage 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .page-section.active { display: block; }
+
+        @keyframes fadeInPage {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Scroll Reveal Animations --- */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        .reveal-left { opacity: 0; transform: translateX(-40px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal-left.active { opacity: 1; transform: translateX(0); }
+
+        .reveal-right { opacity: 0; transform: translateX(40px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal-right.active { opacity: 1; transform: translateX(0); }
+
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+
+        /* --- Custom UI Elements --- */
+        
+        /* Hide scrollbar for the horizontal sliders */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Sharp Editorial Button */
+        .btn-editorial {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            z-index: 1;
+        }
+        .btn-editorial::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background-color: #0f1115;
+            transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: -1;
+        }
+        .btn-editorial:hover::after { height: 100%; }
+        .btn-editorial:hover { color: #ffffff; }
+
+        /* Permanent Dark Luxury Header */
+        #main-header { 
+            transition: all 0.3s ease; 
+            background-color: rgba(9, 10, 15, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+        #main-header .nav-link { 
+            color: rgba(255, 255, 255, 0.75); 
+            transition: all 0.25s ease;
+        }
+        #main-header .nav-link:hover { 
+            color: #ffffff; 
+            background-color: rgba(255, 255, 255, 0.06); 
+        }
+        #main-header .nav-link.active-link,
+        .nav-link.active-link { 
+            color: #c5a880 !important; 
+            background-color: rgba(197, 168, 128, 0.2) !important;
+            border: 1px solid rgba(197, 168, 128, 0.5) !important;
+            box-shadow: 0 0 16px rgba(197, 168, 128, 0.3) !important;
+            font-weight: 700 !important;
+        }
+        .mobile-nav-link.active-link {
+            color: #c5a880 !important;
+            background-color: rgba(197, 168, 128, 0.2) !important;
+            border-left: 4px solid #c5a880 !important;
+            font-weight: 700 !important;
+        }
+        #main-header .btn-header { border-color: rgba(255, 255, 255, 0.25); color: #ffffff; }
+        #main-header .btn-header:hover { background-color: #ffffff; color: #090a0f; border-color: #ffffff; }
+
+        /* Image Hover Scale */
+        .img-zoom-wrapper { overflow: hidden; }
+        .img-zoom-wrapper img { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .img-zoom-wrapper:hover img { transform: scale(1.05); }
+
+        /* Silk-smooth GPU-accelerated luxury card hover (zero jitter, 60fps) */
+        .smooth-luxury-card {
+            position: relative;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.35s ease;
+            will-change: transform, box-shadow;
+        }
+        .smooth-luxury-card:hover {
+            transform: translateY(-5px) translateZ(0);
+            -webkit-transform: translateY(-5px) translateZ(0);
+            border-color: #c5a880 !important;
+            box-shadow: 0 16px 32px -8px rgba(197, 168, 128, 0.2), 0 8px 16px -4px rgba(0, 0, 0, 0.06) !important;
+        }
+
+        /* High-contrast White Button on Dark frames with Champagne Gold Reflection Ring */
+        .btn-gold-ring {
+            background-color: #ffffff !important;
+            color: #090a0f !important;
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            position: relative;
+            cursor: pointer;
+            outline: none;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        background-color 0.3s ease,
+                        color 0.3s ease,
+                        border-color 0.3s ease,
+                        box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+        .btn-gold-ring:hover {
+            background-color: #c5a880 !important;
+            color: #090a0f !important;
+            border-color: #c5a880 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.5), 
+                        0 0 30px rgba(197, 168, 128, 0.5), 
+                        0 15px 30px -5px rgba(0, 0, 0, 0.5) !important;
+        }
+        .btn-gold-ring:active {
+            transform: translateY(0);
+            box-shadow: 0 0 0 2px rgba(197, 168, 128, 0.7), 
+                        0 0 20px rgba(197, 168, 128, 0.4) !important;
+        }
+    </style>
+</head>
+
+<body class="antialiased flex flex-col min-h-screen">
+
+    <!-- HEADER -->
+    <header id="main-header" class="fixed top-0 left-0 w-full z-50 py-3.5 px-6 sm:px-8 md:px-16 flex items-center justify-between">
+        <div class="flex items-center gap-3 select-none">
+            <div class="logo-box w-8 h-8 flex items-center justify-center">
+                <span class="font-serif font-bold text-lg leading-none">A</span>
+            </div>
+            <span class="font-serif font-semibold text-xl tracking-wide text-white">Aventine</span>
+        </div>
+
+        <nav class="hidden lg:flex items-center gap-2">
+            <a href="#home" class="nav-link px-3.5 py-1.5 rounded-full text-xs uppercase tracking-widest font-medium transition-all text-white/75 hover:text-white hover:bg-white/5 border border-transparent">Home</a>
+            <a href="#vision" class="nav-link px-3.5 py-1.5 rounded-full text-xs uppercase tracking-widest font-medium transition-all text-white/75 hover:text-white hover:bg-white/5 border border-transparent">The Vision</a>
+            <a href="#commercial" class="nav-link px-3.5 py-1.5 rounded-full text-xs uppercase tracking-widest font-medium transition-all text-white/75 hover:text-white hover:bg-white/5 border border-transparent">Commercial</a>
+            <a href="#residential" class="nav-link px-3.5 py-1.5 rounded-full text-xs uppercase tracking-widest font-medium transition-all text-white/75 hover:text-white hover:bg-white/5 border border-transparent">Residential</a>
+            <a href="#pricing" class="nav-link px-3.5 py-1.5 rounded-full text-xs uppercase tracking-widest font-medium transition-all text-white/75 hover:text-white hover:bg-white/5 border border-transparent">Pricing</a>
+        </nav>
+
+        <div class="hidden lg:block">
+            <a href="#contact" class="btn-header px-6 py-2.5 border text-xs font-bold uppercase tracking-widest transition-colors rounded-sm">
+                Schedule Visit
+            </a>
+        </div>
+
+        <button class="lg:hidden text-white" onclick="const m = document.getElementById('mobile-drawer'); if(m) m.classList.toggle('hidden');">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+    </header>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-drawer" class="hidden lg:hidden fixed top-[58px] left-0 w-full bg-[#090a0f]/98 backdrop-blur-2xl border-b border-white/10 z-40 py-6 px-8 space-y-2 shadow-2xl">
+        <a href="#home" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="mobile-nav-link block text-sm font-semibold text-white/75 hover:text-white hover:bg-white/5 px-4 py-2.5 rounded-lg transition-all border border-transparent">Home</a>
+        <a href="#vision" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="mobile-nav-link block text-sm font-semibold text-white/75 hover:text-white hover:bg-white/5 px-4 py-2.5 rounded-lg transition-all border border-transparent">The Vision</a>
+        <a href="#commercial" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="mobile-nav-link block text-sm font-semibold text-white/75 hover:text-white hover:bg-white/5 px-4 py-2.5 rounded-lg transition-all border border-transparent">Commercial</a>
+        <a href="#residential" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="mobile-nav-link block text-sm font-semibold text-white/75 hover:text-white hover:bg-white/5 px-4 py-2.5 rounded-lg transition-all border border-transparent">Residential</a>
+        <a href="#pricing" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="mobile-nav-link block text-sm font-semibold text-white/75 hover:text-white hover:bg-white/5 px-4 py-2.5 rounded-lg transition-all border border-transparent">Pricing</a>
+        <a href="#contact" onclick="document.getElementById('mobile-drawer').classList.add('hidden')" class="block text-center bg-white text-[#090a0f] py-3 rounded-lg text-xs font-bold uppercase tracking-widest mt-4">Schedule Visit</a>
+    </div>
+
+    <main class="flex-grow">
+        
+        <!-- ==========================================
+             PAGE: HOME 
+             ========================================== -->
+        <div id="page-home" class="page-section active">
+            
+            <!-- Hero: Full Image BG with Dark Vibe -->
+            <section class="relative h-screen min-h-[800px] flex flex-col items-center justify-center px-8 text-center pt-20">
+                <div class="absolute inset-0 z-0">
+                    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover" alt="Corporate Architecture">
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-brand-dark"></div>
+                </div>
+                
+                <div class="relative z-10 max-w-4xl mx-auto w-full reveal">
+                    <p class="text-white/70 tracking-[0.2em] uppercase text-xs mb-6 font-semibold">13+ Years of Real Estate Excellence</p>
+                    <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl text-white leading-[1.1] mb-12">
+                        Select Best Home<br>
+                        <span class="italic font-light text-brand-accent">With Us</span>
+                    </h1>
+
+                    <!-- Floating Search Bar -->
+                    <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-float overflow-hidden flex flex-col md:flex-row p-2 text-left reveal stagger-1">
+                        <div class="flex border-b md:border-b-0 md:border-r border-gray-200">
+                            <button class="px-8 py-4 text-sm font-bold border-b-2 border-brand-dark">Sell</button>
+                            <button class="px-8 py-4 text-sm font-medium text-gray-400 hover:text-brand-dark">Rent</button>
+                        </div>
+                        <div class="flex-grow flex items-center px-6 py-2 gap-4">
+                            <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+                            <input type="text" placeholder="Search by location or Property ID..." class="w-full outline-none text-sm font-medium placeholder:font-normal">
+                        </div>
+                        <button class="bg-brand-dark text-white px-10 py-4 m-1 rounded-xl text-sm font-bold hover:bg-brand-darker transition-colors">
+                            Explore
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Footer overlapping hero -->
+                <div class="absolute bottom-10 left-0 w-full z-10 px-8 md:px-16 reveal stagger-2">
+                    <div class="max-w-7xl mx-auto border-t border-white/20 pt-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-white text-left">
+                        <div>
+                            <p class="text-3xl font-serif mb-1">2,00,000</p>
+                            <p class="text-xs tracking-widest uppercase text-white/50">Happy Homes</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-serif mb-1">6000+ Ar</p>
+                            <p class="text-xs tracking-widest uppercase text-white/50">Reserved Land</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-serif mb-1">100k+</p>
+                            <p class="text-xs tracking-widest uppercase text-white/50">Properties Sold</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Popular Residences Slider -->
+            <section class="bg-brand-dark text-white py-24 pl-8 md:pl-16 overflow-hidden">
+                <div class="max-w-7xl mx-auto pr-8 md:pr-16 mb-12 flex justify-between items-end reveal">
+                    <h2 class="font-serif text-4xl">Popular Residence</h2>
+                    <div class="flex gap-4 hidden md:flex">
+                        <button class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-brand-dark transition-colors"><i data-lucide="arrow-left" class="w-4 h-4"></i></button>
+                        <button class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-brand-dark transition-colors"><i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+
+                <!-- Horizontal CSS Slider -->
+                <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-12 hide-scrollbar reveal stagger-1">
+                    
+                    <!-- Card 1 -->
+                    <div onclick="openApartment(1)" class="snap-start min-w-[320px] md:min-w-[400px] bg-brand-darker rounded-2xl overflow-hidden group cursor-pointer border border-white/5 hover:border-brand-accent/50 transition-all">
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <div class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5 text-white"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-serif text-xl mb-2 group-hover:text-brand-accent transition-colors">Sekarwangi Sanctuary</h3>
+                            <p class="text-white/50 text-sm font-light mb-4">2472 Newmarket Rd, Santa Ana, Illinois</p>
+                            <p class="font-medium text-lg">$943,000 <span class="text-xs text-white/40 font-light">Est. Valuation</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div onclick="openApartment(2)" class="snap-start min-w-[320px] md:min-w-[400px] bg-brand-darker rounded-2xl overflow-hidden group cursor-pointer border border-white/5 hover:border-brand-accent/50 transition-all">
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <div class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5 text-white"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-serif text-xl mb-2 group-hover:text-brand-accent transition-colors">Luwigiang Penthouse</h3>
+                            <p class="text-white/50 text-sm font-light mb-4">2715 Peabody Rd, Syracuse, Connecticut</p>
+                            <p class="font-medium text-lg">$576,000 <span class="text-xs text-white/40 font-light">Est. Valuation</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div onclick="openApartment(3)" class="snap-start min-w-[320px] md:min-w-[400px] bg-brand-darker rounded-2xl overflow-hidden group cursor-pointer border border-white/5 hover:border-brand-accent/50 transition-all">
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <div class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5 text-white"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-serif text-xl mb-2 group-hover:text-brand-accent transition-colors">Pelangi Coastal Villa</h3>
+                            <p class="text-white/50 text-sm font-light mb-4">8910 Westheimer Rd, Santa Ana, Illinois</p>
+                            <p class="font-medium text-lg">$748,000 <span class="text-xs text-white/40 font-light">Est. Valuation</span></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 4 -->
+                    <div onclick="openApartment(4)" class="snap-start min-w-[320px] md:min-w-[400px] bg-brand-darker rounded-2xl overflow-hidden group cursor-pointer border border-white/5 hover:border-brand-accent/50 transition-all">
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <div class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5 text-white"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-serif text-xl mb-2 group-hover:text-brand-accent transition-colors">Vanguard Glass Pavilion</h3>
+                            <p class="text-white/50 text-sm font-light mb-4">1044 Park Ave, New York, NY</p>
+                            <p class="font-medium text-lg">$1,850,000 <span class="text-xs text-white/40 font-light">Est. Valuation</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Card 5 (Aethelgard Brutalist Manse) -->
+                    <div onclick="openApartment(5)" class="snap-start min-w-[320px] md:min-w-[400px] bg-brand-darker rounded-2xl overflow-hidden group cursor-pointer border border-white/5 hover:border-brand-accent/50 transition-all">
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <div class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5 text-white"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-serif text-xl mb-2 group-hover:text-brand-accent transition-colors">Aethelgard Brutalist Manse</h3>
+                            <p class="text-white/50 text-sm font-light mb-4">412 Highland Ave, Aspen, Colorado</p>
+                            <p class="font-medium text-lg">$2,450,000 <span class="text-xs text-white/40 font-light">Est. Valuation</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Card 6 (Mirador Horizon Penthouse) -->
+                    <div onclick="openApartment(6)" class="snap-start min-w-[320px] md:min-w-[400px] bg-brand-darker rounded-2xl overflow-hidden group cursor-pointer border border-white/5 hover:border-brand-accent/50 transition-all">
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <div class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5 text-white"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-serif text-xl mb-2 group-hover:text-brand-accent transition-colors">Mirador Horizon Penthouse</h3>
+                            <p class="text-white/50 text-sm font-light mb-4">880 Brickell Key Dr, Miami, Florida</p>
+                            <p class="font-medium text-lg">$1,280,000 <span class="text-xs text-white/40 font-light">Est. Valuation</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Card 7 (Komorebi Zen Villa) -->
+                    <div onclick="openApartment(7)" class="snap-start min-w-[320px] md:min-w-[400px] bg-brand-darker rounded-2xl overflow-hidden group cursor-pointer border border-white/5 hover:border-brand-accent/50 transition-all">
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            <div class="absolute top-4 right-4 w-10 h-10 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5 text-white"></i>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-serif text-xl mb-2 group-hover:text-brand-accent transition-colors">Komorebi Zen Villa</h3>
+                            <p class="text-white/50 text-sm font-light mb-4">1520 Olympic Blvd, Santa Monica, California</p>
+                            <p class="font-medium text-lg">$1,650,000 <span class="text-xs text-white/40 font-light">Est. Valuation</span></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 8 (Buffer) -->
+                    <div onclick="navigateTo('#residential')" class="snap-start min-w-[320px] md:min-w-[400px] bg-brand-darker rounded-2xl overflow-hidden group cursor-pointer border border-white/5 pr-8 hover:border-white/20 transition-all">
+                        <div class="h-64 overflow-hidden relative bg-white/5 flex items-center justify-center">
+                            <span class="text-white/70 text-sm tracking-widest uppercase font-semibold group-hover:text-white transition-colors">View All Portfolios →</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sharp Editorial Diagonal Layout -->
+            <section class="bg-brand-offwhite py-32 px-8 md:px-16">
+                <div class="max-w-7xl mx-auto">
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-32">
+                        <div class="reveal-left order-2 lg:order-1">
+                            <h2 class="font-serif text-4xl md:text-5xl mb-6">A Higher Standard of Property Care & Management</h2>
+                            <p class="text-brand-muted font-light leading-relaxed mb-8 text-lg">
+                                We combine local expertise with a high-touch service model ensuring your home is immaculately maintained. Think of us as your dedicated next-door neighbor. We are on your local advisory putting our personal, on-the-ground vigilance to work.
+                            </p>
+                            <a href="#contact" class="btn-editorial inline-block border border-brand-dark px-8 py-4 text-xs font-bold uppercase tracking-widest">
+                                Tell Your Story
+                            </a>
+                        </div>
+                        <div class="reveal-right order-1 lg:order-2 img-zoom-wrapper">
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop" class="w-full h-[500px] object-cover rounded-sm shadow-elegant">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                        <div class="reveal-left img-zoom-wrapper">
+                            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=2070&auto=format&fit=crop" class="w-full h-[500px] object-cover rounded-sm shadow-elegant">
+                        </div>
+                        <div class="reveal-right pl-0 lg:pl-12">
+                            <h2 class="font-serif text-4xl md:text-5xl mb-6">Local, Trustworthy, Discrete.</h2>
+                            <p class="text-brand-muted font-light leading-relaxed mb-8 text-lg">
+                                Guaranteed discretion is our promise. Your property is always well-managed and cared for with the utmost privacy. We offer complete care for every North Bay home, tailoring our approach to your specific architectural and operational needs.
+                            </p>
+                            <ul class="space-y-4 mb-8 border-t border-brand-border pt-6">
+                                <li class="flex items-center justify-between text-sm"><span class="font-medium">Routine Property Maintenance</span> <i data-lucide="check" class="w-4 h-4 text-brand-accent"></i></li>
+                                <li class="flex items-center justify-between text-sm"><span class="font-medium">Seasonal Preparations</span> <i data-lucide="check" class="w-4 h-4 text-brand-accent"></i></li>
+                                <li class="flex items-center justify-between text-sm"><span class="font-medium">Vendor Oversight</span> <i data-lucide="check" class="w-4 h-4 text-brand-accent"></i></li>
+                            </ul>
+                            <a href="#vision" class="btn-editorial inline-block bg-brand-dark text-white px-8 py-4 text-xs font-bold uppercase tracking-widest">
+                                Schedule A Visit
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <!-- ==========================================
+             PAGE: THE VISION 
+             ========================================== -->
+        <div id="page-vision" class="page-section bg-[#f7f7f9] text-zinc-950">
+            <!-- Hero Manifesto -->
+            <section class="pt-40 pb-24 px-8 md:px-16 text-center">
+                <div class="max-w-4xl mx-auto reveal">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-zinc-200/90 shadow-sm mb-6">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-brand-accent"></i>
+                        <span class="text-brand-accent uppercase tracking-[0.25em] text-[11px] font-bold">
+                            Corporate Philosophy & Stewardship Manifesto
+                        </span>
+                    </div>
+
+                    <h1 class="font-serif text-5xl md:text-7xl leading-tight text-zinc-950 mb-8">
+                        Enduring Architectural<br>
+                        <span class="italic text-brand-accent font-light">Stewardship.</span>
+                    </h1>
+
+                    <p class="text-zinc-600 text-lg md:text-xl font-light leading-relaxed max-w-3xl mx-auto mb-10">
+                        Aventine was founded on a singular conviction: extraordinary architecture demands more than conventional property management. It requires technological rigor, preventative engineering, and unyielding discretion to safeguard physical wealth across generational horizons.
+                    </p>
+
+                    <div class="flex flex-wrap items-center justify-center gap-4">
+                        <a href="#residential" class="inline-block px-8 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest bg-zinc-950 text-white hover:bg-brand-accent hover:text-zinc-950 transition-all duration-300 shadow-xl hover:shadow-[0_10px_30px_rgba(197,168,128,0.3)] cursor-pointer">
+                            Explore Portfolio
+                        </a>
+                        <a href="#contact" class="px-8 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest border border-zinc-300 bg-white text-zinc-950 hover:border-zinc-950 transition-all shadow-sm">
+                            Engage Advisory Desk
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Metrics Banner (High-Contrast Obsidian Bar) -->
+            <section class="border-y border-zinc-800 bg-zinc-950 text-white py-14 shadow-xl">
+                <div class="max-w-7xl mx-auto px-8 md:px-16">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                        <div class="reveal stagger-1">
+                            <p class="font-serif text-4xl sm:text-5xl font-light text-brand-accent mb-2">$4.2B+</p>
+                            <p class="text-xs uppercase tracking-widest text-zinc-400 font-semibold">Private Assets Under Care</p>
+                        </div>
+                        <div class="reveal stagger-2">
+                            <p class="font-serif text-4xl sm:text-5xl font-light text-white mb-2">140</p>
+                            <p class="text-xs uppercase tracking-widest text-zinc-400 font-semibold">Checkpoint Inspections</p>
+                        </div>
+                        <div class="reveal stagger-3">
+                            <p class="font-serif text-4xl sm:text-5xl font-light text-brand-accent mb-2">99.4%</p>
+                            <p class="text-xs uppercase tracking-widest text-zinc-400 font-semibold">UHNW Retainer Renewal</p>
+                        </div>
+                        <div class="reveal stagger-4">
+                            <p class="font-serif text-4xl sm:text-5xl font-light text-white mb-2">0</p>
+                            <p class="text-xs uppercase tracking-widest text-zinc-400 font-semibold">Public Disclosures or Breaches</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Four Pillars -->
+            <section class="py-32 px-8 md:px-16">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center max-w-2xl mx-auto mb-20 reveal">
+                        <span class="text-brand-accent uppercase tracking-[0.25em] text-xs font-bold mb-2 block">Foundational Standards</span>
+                        <h2 class="font-serif text-4xl font-light text-zinc-950 mb-4">The Four Pillars of Aventine</h2>
+                        <p class="text-zinc-600 text-sm font-light">Each estate under our purview is managed through a multi-layered matrix of precision engineering and absolute privacy.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="reveal stagger-1">
+                            <div class="smooth-luxury-card bg-white border border-zinc-200/90 p-8 sm:p-10 rounded-2xl group shadow-sm h-full flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-start justify-between mb-6">
+                                        <span class="font-serif text-5xl text-brand-accent font-light">01</span>
+                                        <span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-zinc-100 text-zinc-600 rounded-full border border-zinc-200 group-hover:border-brand-accent/30 group-hover:text-brand-accent transition-colors">Absolute Privacy Protocols</span>
+                                    </div>
+                                    <h3 class="font-serif text-2xl font-medium text-zinc-950 mb-3 group-hover:text-brand-accent transition-colors">Sovereign Discretion</h3>
+                                    <p class="text-zinc-600 text-sm font-light leading-relaxed">
+                                        We safeguard owner identities, corporate trusts, and private escrows with zero-knowledge operational protocols. Every vendor engagement and lease agreement is governed under sealed non-disclosure agreements.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="reveal stagger-2">
+                            <div class="smooth-luxury-card bg-white border border-zinc-200/90 p-8 sm:p-10 rounded-2xl group shadow-sm h-full flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-start justify-between mb-6">
+                                        <span class="font-serif text-5xl text-brand-accent font-light">02</span>
+                                        <span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-zinc-100 text-zinc-600 rounded-full border border-zinc-200 group-hover:border-brand-accent/30 group-hover:text-brand-accent transition-colors">Sub-Millimeter Telemetry</span>
+                                    </div>
+                                    <h3 class="font-serif text-2xl font-medium text-zinc-950 mb-3 group-hover:text-brand-accent transition-colors">Predictive Engineering</h3>
+                                    <p class="text-zinc-600 text-sm font-light leading-relaxed">
+                                        Preventative stewardship replaces reactive repair. Continuous IoT vibration sensors, thermal imaging audits, and acoustic monitoring detect mechanical anomalies weeks before failure occurs.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="reveal stagger-3">
+                            <div class="smooth-luxury-card bg-white border border-zinc-200/90 p-8 sm:p-10 rounded-2xl group shadow-sm h-full flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-start justify-between mb-6">
+                                        <span class="font-serif text-5xl text-brand-accent font-light">03</span>
+                                        <span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-zinc-100 text-zinc-600 rounded-full border border-zinc-200 group-hover:border-brand-accent/30 group-hover:text-brand-accent transition-colors">Museum-Grade Preservation</span>
+                                    </div>
+                                    <h3 class="font-serif text-2xl font-medium text-zinc-950 mb-3 group-hover:text-brand-accent transition-colors">Material Craft & Heritage</h3>
+                                    <p class="text-zinc-600 text-sm font-light leading-relaxed">
+                                        From custom fluted white oak to bookmatched Calacatta marble, we employ dedicated artisan conservators who specialize in restoring and safeguarding irreplaceable architectural finishes.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="reveal stagger-4">
+                            <div class="smooth-luxury-card bg-white border border-zinc-200/90 p-8 sm:p-10 rounded-2xl group shadow-sm h-full flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-start justify-between mb-6">
+                                        <span class="font-serif text-5xl text-brand-accent font-light">04</span>
+                                        <span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-zinc-100 text-zinc-600 rounded-full border border-zinc-200 group-hover:border-brand-accent/30 group-hover:text-brand-accent transition-colors">Unified Portfolio Ledger</span>
+                                    </div>
+                                    <h3 class="font-serif text-2xl font-medium text-zinc-950 mb-3 group-hover:text-brand-accent transition-colors">Algorithmic Telemetry</h3>
+                                    <p class="text-zinc-600 text-sm font-light leading-relaxed">
+                                        Reconcile municipal submetering, solar photovoltaic generation, graywater recovery, and ESG compliance through a single encrypted glass dashboard, accessible only by designated family office delegates.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 140-Point Protocol Breakdown (Dark Architectural Module) -->
+            <section class="py-24 px-8 md:px-16">
+                <div class="max-w-7xl mx-auto bg-gradient-to-b from-zinc-950 to-zinc-900 border border-zinc-800 rounded-3xl p-8 sm:p-14 text-white shadow-2xl">
+                    <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-16 pb-8 border-b border-white/10 gap-6">
+                        <div>
+                            <span class="text-brand-accent uppercase tracking-[0.25em] text-xs font-bold mb-2 block">Proprietary Methodology</span>
+                            <h2 class="font-serif text-3xl sm:text-4xl font-light text-white">The 140-Point Stewardship Protocol</h2>
+                        </div>
+                        <p class="text-zinc-400 text-sm font-light max-w-md">Every quarterly audit follows an uncompromising mechanical, structural, and legal checklist before receiving Aventine Sovereign Certification.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-black/40 border border-white/5 rounded-2xl p-6 flex flex-col justify-between hover:border-white/20 transition-all">
+                            <div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <i data-lucide="shield-check" class="w-5 h-5 text-brand-accent"></i>
+                                    <span class="text-[10px] font-mono text-brand-accent bg-brand-accent/10 px-2 py-0.5 rounded">36 Checkpoints</span>
+                                </div>
+                                <h4 class="font-serif text-lg font-medium text-white mb-4">Envelope & Structural Shell</h4>
+                                <ul class="space-y-2.5 text-xs text-zinc-400 font-light">
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Infrared thermal envelope leak detection</span></li>
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Roof waterproofing membrane integrity</span></li>
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Acoustic double-glazing seal verification</span></li>
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Seismic tie-downs & shear wall audit</span></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-black/40 border border-white/5 rounded-2xl p-6 flex flex-col justify-between hover:border-white/20 transition-all">
+                            <div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <i data-lucide="shield-check" class="w-5 h-5 text-brand-accent"></i>
+                                    <span class="text-[10px] font-mono text-brand-accent bg-brand-accent/10 px-2 py-0.5 rounded">42 Checkpoints</span>
+                                </div>
+                                <h4 class="font-serif text-lg font-medium text-white mb-4">Mechanical, Electrical & HVAC</h4>
+                                <ul class="space-y-2.5 text-xs text-zinc-400 font-light">
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>HEPA filtration & negative pressure testing</span></li>
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Variable refrigerant flow (VRF) calibration</span></li>
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Generator microgrid cutover load test</span></li>
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Smart architectural Lutron bus diagnostics</span></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-black/40 border border-white/5 rounded-2xl p-6 flex flex-col justify-between hover:border-white/20 transition-all">
+                            <div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <i data-lucide="shield-check" class="w-5 h-5 text-brand-accent"></i>
+                                    <span class="text-[10px] font-mono text-brand-accent bg-brand-accent/10 px-2 py-0.5 rounded">34 Checkpoints</span>
+                                </div>
+                                <h4 class="font-serif text-lg font-medium text-white mb-4">Private Terroir & Water</h4>
+                                <ul class="space-y-2.5 text-xs text-zinc-400 font-light">
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Saline infinity pool pH & salinity sensors</span></li>
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Travertine anti-slip surface sealing</span></li>
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Arborist root boundary surveillance</span></li>
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Greywater reclamation & smart irrigation</span></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-black/40 border border-white/5 rounded-2xl p-6 flex flex-col justify-between hover:border-white/20 transition-all">
+                            <div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <i data-lucide="shield-check" class="w-5 h-5 text-brand-accent"></i>
+                                    <span class="text-[10px] font-mono text-brand-accent bg-brand-accent/10 px-2 py-0.5 rounded">28 Checkpoints</span>
+                                </div>
+                                <h4 class="font-serif text-lg font-medium text-white mb-4">Security & Legal Escrow</h4>
+                                <ul class="space-y-2.5 text-xs text-zinc-400 font-light">
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Biometric access control log scrub</span></li>
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Encrypted perimeter CCTV laser fence test</span></li>
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Vendor NDA & insurance credential audit</span></li>
+                                    <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Annual municipal compliance certification</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Leadership -->
+            <section class="py-32 px-8 md:px-16">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center max-w-2xl mx-auto mb-20 reveal">
+                        <span class="text-brand-accent uppercase tracking-[0.25em] text-xs font-bold mb-2 block">Direct Governance</span>
+                        <h2 class="font-serif text-4xl font-light text-zinc-950 mb-4">Executive Leadership</h2>
+                        <p class="text-zinc-600 text-sm font-light">Guiding asset preservation with decades of master engineering and fiduciary care.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-white border border-zinc-200/90 rounded-2xl overflow-hidden group hover:border-brand-accent hover:shadow-xl transition-all shadow-sm">
+                            <div class="h-64 overflow-hidden relative">
+                                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter grayscale contrast-125 group-hover:grayscale-0">
+                                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent"></div>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="font-serif text-xl font-medium text-zinc-950 mb-1">Elena Rostova</h3>
+                                <p class="text-xs uppercase tracking-widest text-brand-accent font-semibold mb-3">Managing Principal & Curator</p>
+                                <p class="text-zinc-600 text-xs sm:text-sm font-light leading-relaxed">Former lead architectural conservator at Vesper Trust, Elena oversees physical asset integrity and bespoke client stewardship.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-zinc-200/90 rounded-2xl overflow-hidden group hover:border-brand-accent hover:shadow-xl transition-all shadow-sm">
+                            <div class="h-64 overflow-hidden relative">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter grayscale contrast-125 group-hover:grayscale-0">
+                                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent"></div>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="font-serif text-xl font-medium text-zinc-950 mb-1">Marcus Vance, PE</h3>
+                                <p class="text-xs uppercase tracking-widest text-brand-accent font-semibold mb-3">Director of Engineering</p>
+                                <p class="text-zinc-600 text-xs sm:text-sm font-light leading-relaxed">With over 18 years in high-rise structural diagnostics, Marcus directs Aventine's predictive maintenance protocols and IoT sensors.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white border border-zinc-200/90 rounded-2xl overflow-hidden group hover:border-brand-accent hover:shadow-xl transition-all shadow-sm">
+                            <div class="h-64 overflow-hidden relative">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter grayscale contrast-125 group-hover:grayscale-0">
+                                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent"></div>
+                            </div>
+                            <div class="p-6">
+                                <h3 class="font-serif text-xl font-medium text-zinc-950 mb-1">Dr. Julian Thorne</h3>
+                                <p class="text-xs uppercase tracking-widest text-brand-accent font-semibold mb-3">Head of ESG Telemetry</p>
+                                <p class="text-zinc-600 text-xs sm:text-sm font-light leading-relaxed">Specializing in microgrid engineering and zero-net carbon operations, Julian ensures every managed asset satisfies global standards.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Closing CTA -->
+            <section class="pb-32 px-8 md:px-16 text-center">
+                <div class="max-w-5xl mx-auto bg-zinc-950 text-white border border-brand-accent/30 rounded-3xl p-10 sm:p-16 shadow-2xl relative overflow-hidden reveal">
+                    <span class="text-brand-accent uppercase tracking-[0.25em] text-xs font-bold mb-3 block">Private Consultation</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-light text-white mb-6">
+                        Preserve Your Architectural Legacy with Aventine
+                    </h2>
+                    <p class="text-zinc-400 text-sm font-light max-w-xl mx-auto mb-8">
+                        Connect directly with an executive partner to initiate confidential onboarding for residential estates or commercial holdings.
+                    </p>
+                    <a href="#contact" class="btn-gold-ring inline-block px-8 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest">
+                        Schedule Advisory Consultation
+                    </a>
+                </div>
+            </section>
+        </div>
+
+        <!-- ==========================================
+             PAGE: COMMERCIAL 
+             ========================================== -->
+        <div id="page-commercial" class="page-section bg-[#f7f7f9] text-zinc-950 pb-32">
+            <!-- Deep Obsidian Hero Pavilion -->
+            <div class="bg-zinc-950 text-white pt-32 pb-20 px-8 md:px-16 border-b border-zinc-800 mb-20 relative overflow-hidden">
+                <div class="absolute top-0 right-1/4 w-96 h-96 bg-brand-accent/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
+                    <div class="reveal-left">
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 backdrop-blur-md mb-6 shadow-sm">
+                            <i data-lucide="building-2" class="w-3.5 h-3.5 text-brand-accent"></i>
+                            <span class="text-brand-accent uppercase tracking-[0.25em] text-[11px] font-bold">
+                                Institutional Asset Governance & Facilities
+                            </span>
+                        </div>
+
+                        <h1 class="font-serif text-5xl lg:text-7xl font-light text-white mb-6 leading-tight">
+                            Class-A Floor Plates & <br />
+                            <span class="italic text-brand-accent">Enterprise Stewardship.</span>
+                        </h1>
+
+                        <p class="text-zinc-300 font-light text-lg mb-8 leading-relaxed">
+                            Aventine manages premier commercial towers, innovation campuses, and high-density creative floor plates with rigorous technological oversight, automated CAM accounting, and mission-critical facilities engineering.
+                        </p>
+
+                        <div class="flex flex-wrap items-center gap-4">
+                            <a href="#contact" class="btn-editorial bg-brand-accent text-zinc-950 hover:bg-white font-bold px-8 py-3.5 rounded-full text-xs uppercase tracking-widest transition-all shadow-xl">
+                                Submit Institutional RFP
+                            </a>
+                            <a href="#pricing" class="px-8 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest border border-white/20 text-white hover:border-brand-accent hover:text-brand-accent transition-all shadow-sm">
+                                View Commercial Tiers
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="reveal-right relative">
+                        <div class="rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl">
+                            <img 
+                                src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200&auto=format&fit=crop" 
+                                alt="Modern Corporate Atrium"
+                                class="w-full h-[420px] sm:h-[520px] object-cover" 
+                            />
+                        </div>
+                        <div class="absolute -bottom-6 -left-6 bg-zinc-900 border border-zinc-700 p-5 rounded-xl shadow-2xl hidden sm:block max-w-xs text-white">
+                            <span class="text-[10px] uppercase tracking-widest text-brand-accent font-bold block mb-1">Corporate Portfolio</span>
+                            <p class="text-xs font-serif text-zinc-200 font-medium">Over 3,800,000 RSF under active engineering stewardship.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-8 md:px-16">
+                <!-- Commercial Key Metrics Banner -->
+                <div class="bg-black text-white rounded-3xl p-10 sm:p-14 mb-28 border border-zinc-800 shadow-2xl">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                        <div class="reveal stagger-1">
+                            <p class="font-serif text-4xl sm:text-5xl font-light text-brand-accent mb-2">3.8M+</p>
+                            <p class="text-xs uppercase tracking-widest text-zinc-400 font-semibold">RSF Class-A Managed</p>
+                        </div>
+                        <div class="reveal stagger-2">
+                            <p class="font-serif text-4xl sm:text-5xl font-light text-white mb-2">99.98%</p>
+                            <p class="text-xs uppercase tracking-widest text-zinc-400 font-semibold">Critical Uptime Guarantee</p>
+                        </div>
+                        <div class="reveal stagger-3">
+                            <p class="font-serif text-4xl sm:text-5xl font-light text-brand-accent mb-2">24%</p>
+                            <p class="text-xs uppercase tracking-widest text-zinc-400 font-semibold">Avg. CAM Cost Reduction</p>
+                        </div>
+                        <div class="reveal stagger-4">
+                            <p class="font-serif text-4xl sm:text-5xl font-light text-white mb-2">Zero-Net</p>
+                            <p class="text-xs uppercase tracking-widest text-zinc-400 font-semibold">ESG Scope 1-3 Compliance</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Available Commercial Flagship Assets (Deep Black Luxury Cards) -->
+                <div class="mb-32">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 pb-6 border-b border-zinc-300 gap-4 reveal">
+                        <div>
+                            <span class="text-brand-accent uppercase tracking-[0.25em] text-xs font-bold mb-2 block">Available Floor Plates</span>
+                            <h2 class="font-serif text-3xl sm:text-4xl text-zinc-950 font-light">Institutional Flagship Assets</h2>
+                        </div>
+                        <p class="text-zinc-600 text-xs sm:text-sm max-w-md font-light">
+                            Direct lease inquiries and tenant representation handled under strict NDA protocols.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Flagship 1 -->
+                        <div class="reveal stagger-1 bg-white text-zinc-950 rounded-2xl border border-zinc-200/90 overflow-hidden shadow-lg hover:shadow-2xl hover:border-brand-accent transition-all duration-300 flex flex-col justify-between group">
+                            <div>
+                                <div class="h-64 overflow-hidden relative">
+                                    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1200&auto=format&fit=crop" alt="One Embarcadero Apex Tower" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                    <div class="absolute top-3 left-3 bg-black/85 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-lg">
+                                        <span class="text-[10px] uppercase tracking-widest text-brand-accent font-bold">LEED Platinum Certified</span>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <span class="text-[10px] font-mono text-brand-accent block mb-1">Financial District, San Francisco, CA</span>
+                                    <h3 class="font-serif text-2xl font-medium text-zinc-950 mb-3 group-hover:text-brand-accent transition-colors">One Embarcadero Apex Tower</h3>
+                                    <div class="flex items-center gap-3 py-3 border-y border-zinc-200 text-xs font-medium text-zinc-700 mb-4">
+                                        <span>124,000 RSF Available</span>
+                                        <span class="text-brand-accent">•</span>
+                                        <span>24,800 RSF Typical Floor</span>
+                                    </div>
+                                    <ul class="space-y-2.5 text-xs text-zinc-600 font-light mb-6">
+                                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Column-free panoramic 360° bay views</span></li>
+                                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Redundant 10Gbps dual-carrier dark fiber feeds</span></li>
+                                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Smart chilled-beam HVAC with MERV-15 filtration</span></li>
+                                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Private 48th-floor executive client dining lounge</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="p-6 pt-0">
+                                <a href="#contact" class="w-full py-3 rounded-lg text-xs font-bold uppercase tracking-widest border border-zinc-300 text-zinc-950 hover:bg-zinc-950 hover:text-white hover:border-zinc-950 transition-all flex items-center justify-center gap-2">
+                                    <span>Request Prospectus</span>
+                                    <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Flagship 2 -->
+                        <div class="reveal stagger-2 bg-white text-zinc-950 rounded-2xl border border-zinc-200/90 overflow-hidden shadow-lg hover:shadow-2xl hover:border-brand-accent transition-all duration-300 flex flex-col justify-between group">
+                            <div>
+                                <div class="h-64 overflow-hidden relative">
+                                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200&auto=format&fit=crop" alt="The Foundry Biotech & AI Campus" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                    <div class="absolute top-3 left-3 bg-black/85 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-lg">
+                                        <span class="text-[10px] uppercase tracking-widest text-brand-accent font-bold">WELL Gold Certified</span>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <span class="text-[10px] font-mono text-brand-accent block mb-1">South Lake Union, Seattle, WA</span>
+                                    <h3 class="font-serif text-2xl font-medium text-zinc-950 mb-3 group-hover:text-brand-accent transition-colors">The Foundry Biotech & AI Campus</h3>
+                                    <div class="flex items-center gap-3 py-3 border-y border-zinc-200 text-xs font-medium text-zinc-700 mb-4">
+                                        <span>86,500 RSF Available</span>
+                                        <span class="text-brand-accent">•</span>
+                                        <span>28,500 RSF Continuous Lab Floor</span>
+                                    </div>
+                                    <ul class="space-y-2.5 text-xs text-zinc-600 font-light mb-6">
+                                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Vivarium & cleanroom ready infrastructure</span></li>
+                                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>100% outside air economizers with dynamic purging</span></li>
+                                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Dedicated subterranean logistics & freight bays</span></li>
+                                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Autonomous 2MW diesel microgrid backup</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="p-6 pt-0">
+                                <a href="#contact" class="w-full py-3 rounded-lg text-xs font-bold uppercase tracking-widest border border-zinc-300 text-zinc-950 hover:bg-zinc-950 hover:text-white hover:border-zinc-950 transition-all flex items-center justify-center gap-2">
+                                    <span>Request Prospectus</span>
+                                    <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Flagship 3 -->
+                        <div class="reveal stagger-3 bg-white text-zinc-950 rounded-2xl border border-zinc-200/90 overflow-hidden shadow-lg hover:shadow-2xl hover:border-brand-accent transition-all duration-300 flex flex-col justify-between group">
+                            <div>
+                                <div class="h-64 overflow-hidden relative">
+                                    <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=1200&auto=format&fit=crop" alt="Hudson Horizon Creative Pavilions" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                    <div class="absolute top-3 left-3 bg-black/85 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 shadow-lg">
+                                        <span class="text-[10px] uppercase tracking-widest text-brand-accent font-bold">Energy Star 96 Rating</span>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <span class="text-[10px] font-mono text-brand-accent block mb-1">Meatpacking District, New York, NY</span>
+                                    <h3 class="font-serif text-2xl font-medium text-zinc-950 mb-3 group-hover:text-brand-accent transition-colors">Hudson Horizon Creative Pavilions</h3>
+                                    <div class="flex items-center gap-3 py-3 border-y border-zinc-200 text-xs font-medium text-zinc-700 mb-4">
+                                        <span>45,000 RSF Available</span>
+                                        <span class="text-brand-accent">•</span>
+                                        <span>15,000 RSF Column-Free Plates</span>
+                                    </div>
+                                    <ul class="space-y-2.5 text-xs text-zinc-600 font-light mb-6">
+                                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>18-foot ceiling heights with original timber beams</span></li>
+                                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Private landscaped rooftop presentation amphitheater</span></li>
+                                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Biometric turnstile entry with frictionless dispatch</span></li>
+                                        <li class="flex items-start gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5"></i><span>Heavy-load freight elevators with street-level hoist</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="p-6 pt-0">
+                                <a href="#contact" class="w-full py-3 rounded-lg text-xs font-bold uppercase tracking-widest border border-zinc-300 text-zinc-950 hover:bg-zinc-950 hover:text-white hover:border-zinc-950 transition-all flex items-center justify-center gap-2">
+                                    <span>Request Prospectus</span>
+                                    <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Space & CAM Savings Estimator Tool (Deep Obsidian Monolith) -->
+                <div class="mb-32 reveal">
+                    <div class="bg-zinc-950 text-white rounded-3xl border border-zinc-800 p-8 sm:p-14 shadow-2xl relative overflow-hidden">
+                        <div class="max-w-3xl mx-auto text-center mb-10">
+                            <span class="text-brand-accent uppercase tracking-[0.25em] text-xs font-bold mb-2 block">Dynamic Modeling</span>
+                            <h2 class="font-serif text-3xl sm:text-4xl text-white font-light mb-3">
+                                Commercial Floor Plate & CAM Savings Estimator
+                            </h2>
+                            <p class="text-zinc-400 text-sm font-light">
+                                Select your enterprise square footage requirements to model projected headcount density, HVAC telemetry optimization, and operational expense savings under Aventine stewardship.
+                            </p>
+                        </div>
+
+                        <!-- Selector Buttons -->
+                        <div class="flex flex-wrap justify-center gap-3 mb-10" id="cam-rsf-buttons">
+                            <button onclick="setPreviewCamEstimator(15000)" class="cam-rsf-btn px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer bg-zinc-900 text-zinc-300 hover:bg-zinc-800 border border-white/10">
+                                15,000 RSF
+                            </button>
+                            <button onclick="setPreviewCamEstimator(35000)" class="cam-rsf-btn px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer bg-brand-accent text-zinc-950 font-black shadow-lg shadow-brand-accent/30">
+                                35,000 RSF
+                            </button>
+                            <button onclick="setPreviewCamEstimator(75000)" class="cam-rsf-btn px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer bg-zinc-900 text-zinc-300 hover:bg-zinc-800 border border-white/10">
+                                75,000 RSF
+                            </button>
+                            <button onclick="setPreviewCamEstimator(120000)" class="cam-rsf-btn px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer bg-zinc-900 text-zinc-300 hover:bg-zinc-800 border border-white/10">
+                                120,000 RSF
+                            </button>
+                        </div>
+
+                        <!-- Calculated Results Cards (Deep Obsidian) -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-center">
+                            <div class="p-6 rounded-2xl bg-black/60 border border-zinc-800">
+                                <span class="text-xs uppercase tracking-widest text-zinc-400 font-semibold block mb-1">Target Headcount</span>
+                                <p id="cam-headcount" class="font-serif text-4xl text-white font-medium mb-1">~259 Desks</p>
+                                <span class="text-[11px] text-zinc-500">At standard 135 RSF/seat planning density</span>
+                            </div>
+
+                            <div class="p-6 rounded-2xl bg-black/60 border border-zinc-800">
+                                <span class="text-xs uppercase tracking-widest text-zinc-400 font-semibold block mb-1">Annual CAM Savings</span>
+                                <p id="cam-savings" class="font-serif text-4xl text-brand-accent font-medium mb-1">$238,000</p>
+                                <span class="text-[11px] text-zinc-500">Through BAS submetering & centralized vendor bidding</span>
+                            </div>
+
+                            <div class="p-6 rounded-2xl bg-black/60 border border-zinc-800">
+                                <span class="text-xs uppercase tracking-widest text-zinc-400 font-semibold block mb-1">Carbon Offset Index</span>
+                                <p id="cam-carbon" class="font-serif text-4xl text-white font-medium mb-1">1470.0 Tons/Yr</p>
+                                <span class="text-[11px] text-zinc-500">ASHRAE 90.1 chilled-beam economizer telemetry</span>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <a href="#contact" class="btn-gold-ring inline-block font-bold px-8 py-3.5 rounded-full text-xs uppercase tracking-widest">
+                                Schedule Private Floor Plate Walkthrough
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Pillars of Commercial Stewardship (Crisp White Luxury Cards) -->
+                <div class="mb-28">
+                    <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+                        <span class="text-brand-accent uppercase tracking-[0.25em] text-xs font-bold mb-2 block">Institutional Standards</span>
+                        <h2 class="font-serif text-3xl sm:text-4xl font-light text-zinc-950 mb-4">Four Disciplines of Commercial Care</h2>
+                        <p class="text-zinc-600 text-sm font-light">Every square foot under Aventine is continuously audited against strict corporate tenant SLAs.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="reveal stagger-1">
+                            <div class="smooth-luxury-card bg-white text-zinc-950 border border-zinc-200/90 p-8 sm:p-10 rounded-2xl group shadow-sm h-full flex flex-col justify-between">
+                                <div>
+                                    <span class="font-serif text-4xl sm:text-5xl text-brand-accent font-light block mb-4">01</span>
+                                    <h3 class="font-serif text-2xl font-medium text-zinc-950 mb-3 group-hover:text-brand-accent transition-colors">Master Lease & CAM Reconciliations</h3>
+                                    <p class="text-zinc-600 text-sm font-light leading-relaxed">Automated lease boundary reconciliations, real-time Common Area Maintenance (CAM) auditing, index-linked CPI escalations, and multi-entity tenant escrow boundaries.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="reveal stagger-2">
+                            <div class="smooth-luxury-card bg-white text-zinc-950 border border-zinc-200/90 p-8 sm:p-10 rounded-2xl group shadow-sm h-full flex flex-col justify-between">
+                                <div>
+                                    <span class="font-serif text-4xl sm:text-5xl text-brand-accent font-light block mb-4">02</span>
+                                    <h3 class="font-serif text-2xl font-medium text-zinc-950 mb-3 group-hover:text-brand-accent transition-colors">Predictive BAS & Chiller Plant Telemetry</h3>
+                                    <p class="text-zinc-600 text-sm font-light leading-relaxed">Continuous IoT acoustic vibration sensors on central water chillers, variable air volume (VAV) airflow telemetry, and predictive mechanical maintenance replacing emergency repairs.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="reveal stagger-3">
+                            <div class="smooth-luxury-card bg-white text-zinc-950 border border-zinc-200/90 p-8 sm:p-10 rounded-2xl group shadow-sm h-full flex flex-col justify-between">
+                                <div>
+                                    <span class="font-serif text-4xl sm:text-5xl text-brand-accent font-light block mb-4">03</span>
+                                    <h3 class="font-serif text-2xl font-medium text-zinc-950 mb-3 group-hover:text-brand-accent transition-colors">Mission-Critical Facilities SLA</h3>
+                                    <p class="text-zinc-600 text-sm font-light leading-relaxed">N+1 redundant diesel generator testing, automatic utility cutover synchronization, dual-path telecom entry, and 24/7 on-site licensed stationary engineers.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="reveal stagger-4">
+                            <div class="smooth-luxury-card bg-white text-zinc-950 border border-zinc-200/90 p-8 sm:p-10 rounded-2xl group shadow-sm h-full flex flex-col justify-between">
+                                <div>
+                                    <span class="font-serif text-4xl sm:text-5xl text-brand-accent font-light block mb-4">04</span>
+                                    <h3 class="font-serif text-2xl font-medium text-zinc-950 mb-3 group-hover:text-brand-accent transition-colors">ESG Scope 1-3 & Municipal Submetering</h3>
+                                    <p class="text-zinc-600 text-sm font-light leading-relaxed">Automated tenant electrical and chilled-water submetering, greywater reclamation telemetry, and municipal ESG disclosure reports formatted for institutional LP reporting.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Closing Consultation -->
+                <div class="max-w-5xl mx-auto text-center reveal">
+                    <div class="bg-gradient-to-r from-black via-zinc-950 to-black rounded-3xl p-10 sm:p-16 text-white border border-brand-accent/30 shadow-2xl relative overflow-hidden">
+                        <span class="text-brand-accent uppercase tracking-[0.25em] text-xs font-bold mb-3 block">Direct Partner Advisory</span>
+                        <h2 class="font-serif text-3xl sm:text-4xl font-light text-white mb-6">
+                            Empower Your Commercial Floor Plates with Aventine
+                        </h2>
+                        <p class="text-zinc-400 text-sm font-light max-w-xl mx-auto mb-8">
+                            Connect directly with our institutional asset directors to review available floor plates, customized CAM reconciliations, or confidential corporate acquisitions.
+                        </p>
+                        <a href="#contact" class="btn-gold-ring inline-block px-8 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest font-semibold">
+                            Initiate Corporate Consultation
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             PAGE: RESIDENTIAL 
+             ========================================== -->
+        <div id="page-residential" class="page-section bg-[#f7f7f9] text-zinc-950 pb-32 min-h-screen">
+            <!-- Deep Obsidian Hero Header -->
+            <div class="bg-zinc-950 text-white pt-32 pb-20 px-8 md:px-16 border-b border-zinc-800 mb-16 relative overflow-hidden">
+                <!-- Ambient warm gold glow -->
+                <div class="absolute top-0 right-1/4 w-96 h-96 bg-brand-accent/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="max-w-7xl mx-auto relative z-10">
+                    <div class="reveal flex flex-col md:flex-row md:items-end justify-between gap-8 mb-10">
+                        <div>
+                            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 backdrop-blur-md mb-4 shadow-sm">
+                                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-brand-accent"></i>
+                                <span class="text-brand-accent uppercase tracking-[0.25em] text-[11px] font-bold">
+                                    Curated Living Environments
+                                </span>
+                            </div>
+                            <h1 class="font-serif text-4xl sm:text-5xl font-light text-white leading-tight">
+                                Residential Portfolios & <br>
+                                <span class="italic text-brand-accent">Architectural Sanctuaries.</span>
+                            </h1>
+                            <p class="text-zinc-300 font-light text-sm max-w-2xl mt-4 leading-relaxed">
+                                Exclusive villas, sky penthouses, and private estates audited under Aventine's sovereign 140-point stewardship protocol. Every residence guarantees sealed escrow discretion and complete mechanical telemetry.
+                            </p>
+                        </div>
+
+                        <!-- Black Capsule Filter Pills -->
+                        <div class="flex bg-zinc-900 p-1.5 rounded-full border border-white/15 shadow-2xl shrink-0 self-start md:self-auto overflow-x-auto" id="res-filter-buttons">
+                            <button onclick="filterResidentialPreview('All')" class="res-filter-btn px-5 py-2 rounded-full text-xs font-semibold tracking-wider transition-all duration-300 bg-brand-accent text-zinc-950 font-black shadow-lg shadow-brand-accent/20">All</button>
+                            <button onclick="filterResidentialPreview('Villa')" class="res-filter-btn px-5 py-2 rounded-full text-xs font-semibold tracking-wider transition-all duration-300 text-zinc-400 hover:text-white hover:bg-white/5">Villa</button>
+                            <button onclick="filterResidentialPreview('Penthouse')" class="res-filter-btn px-5 py-2 rounded-full text-xs font-semibold tracking-wider transition-all duration-300 text-zinc-400 hover:text-white hover:bg-white/5">Penthouse</button>
+                            <button onclick="filterResidentialPreview('Estate')" class="res-filter-btn px-5 py-2 rounded-full text-xs font-semibold tracking-wider transition-all duration-300 text-zinc-400 hover:text-white hover:bg-white/5">Estate</button>
+                        </div>
+                    </div>
+
+                    <!-- Quick Trust Ledger Strip -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-white/10 text-xs uppercase tracking-widest text-zinc-400 font-medium">
+                        <div>
+                            <span class="text-white font-serif text-2xl sm:text-3xl font-light block mb-0.5">7</span>
+                            <span>Exclusive Sanctuaries</span>
+                        </div>
+                        <div>
+                            <span class="text-brand-accent font-serif text-2xl sm:text-3xl font-light block mb-0.5">140</span>
+                            <span>Checkpoints Certified</span>
+                        </div>
+                        <div>
+                            <span class="text-white font-serif text-2xl sm:text-3xl font-light block mb-0.5">100%</span>
+                            <span>Sovereign NDA Escrow</span>
+                        </div>
+                        <div>
+                            <span class="text-brand-accent font-serif text-2xl sm:text-3xl font-light block mb-0.5">4 Prime</span>
+                            <span>US Flagship Metros</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-8 md:px-16">
+                <!-- Bento Property Grid (Crisp White Luxury Cards) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="residential-cards-grid">
+                    <!-- Property 1: Sekarwangi Sanctuary (Large Card) -->
+                    <div data-property-type="Villa" onclick="openApartment(1)" class="res-prop-card lg:col-span-2 lg:row-span-2 bg-white text-zinc-950 rounded-2xl p-4 sm:p-5 border border-zinc-200/90 hover:border-brand-accent hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group cursor-pointer shadow-md hover:shadow-2xl">
+                        <div class="h-72 lg:h-[440px] overflow-hidden rounded-xl relative mb-4">
+                            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Sekarwangi Sanctuary">
+                            <span class="absolute top-4 left-4 bg-zinc-950/85 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-brand-accent border border-white/10 shadow-lg">
+                                Exclusive • 4 Beds
+                            </span>
+                            <div class="absolute top-4 right-4 bg-zinc-950 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg group-hover:bg-brand-accent group-hover:text-zinc-950 transition-colors border border-white/10">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between px-1 pt-1">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-brand-accent block mb-1">Villa</span>
+                                <h3 class="font-serif text-xl sm:text-2xl text-zinc-950 font-medium mb-1 group-hover:text-brand-accent transition-colors">Sekarwangi Sanctuary</h3>
+                                <p class="text-zinc-500 text-xs font-light">2472 Newmarket Rd, Santa Ana, Illinois</p>
+                            </div>
+                            <div class="text-right shrink-0 pl-2">
+                                <p class="font-serif font-medium text-xl sm:text-2xl text-zinc-950 tracking-tight">$943,000</p>
+                                <p class="text-[11px] text-zinc-500 font-mono">3,850 sq ft</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Property 2: Luwigiang Penthouse -->
+                    <div data-property-type="Penthouse" onclick="openApartment(2)" class="res-prop-card bg-white text-zinc-950 rounded-2xl p-4 sm:p-5 border border-zinc-200/90 hover:border-brand-accent hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group cursor-pointer shadow-md hover:shadow-2xl">
+                        <div class="h-52 overflow-hidden rounded-xl relative mb-4">
+                            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Luwigiang Penthouse">
+                            <span class="absolute top-4 left-4 bg-zinc-950/85 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-brand-accent border border-white/10 shadow-lg">
+                                Trending
+                            </span>
+                            <div class="absolute top-4 right-4 bg-zinc-950 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg group-hover:bg-brand-accent group-hover:text-zinc-950 transition-colors border border-white/10">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between px-1 pt-1">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-brand-accent block mb-1">Penthouse</span>
+                                <h3 class="font-serif text-xl sm:text-2xl text-zinc-950 font-medium mb-1 group-hover:text-brand-accent transition-colors">Luwigiang Penthouse</h3>
+                                <p class="text-zinc-500 text-xs font-light">2715 Peabody Rd, Syracuse, Connecticut</p>
+                            </div>
+                            <div class="text-right shrink-0 pl-2">
+                                <p class="font-serif font-medium text-xl sm:text-2xl text-zinc-950 tracking-tight">$576,000</p>
+                                <p class="text-[11px] text-zinc-500 font-mono">2,420 sq ft</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Property 3: Pelangi Coastal Villa -->
+                    <div data-property-type="Villa" onclick="openApartment(3)" class="res-prop-card bg-white text-zinc-950 rounded-2xl p-4 sm:p-5 border border-zinc-200/90 hover:border-brand-accent hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group cursor-pointer shadow-md hover:shadow-2xl">
+                        <div class="h-52 overflow-hidden rounded-xl relative mb-4">
+                            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Pelangi Coastal Villa">
+                            <span class="absolute top-4 left-4 bg-zinc-950/85 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-brand-accent border border-white/10 shadow-lg">
+                                New Listing
+                            </span>
+                            <div class="absolute top-4 right-4 bg-zinc-950 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg group-hover:bg-brand-accent group-hover:text-zinc-950 transition-colors border border-white/10">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between px-1 pt-1">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-brand-accent block mb-1">Villa</span>
+                                <h3 class="font-serif text-xl sm:text-2xl text-zinc-950 font-medium mb-1 group-hover:text-brand-accent transition-colors">Pelangi Coastal Villa</h3>
+                                <p class="text-zinc-500 text-xs font-light">8910 Westheimer Rd, Santa Ana, Illinois</p>
+                            </div>
+                            <div class="text-right shrink-0 pl-2">
+                                <p class="font-serif font-medium text-xl sm:text-2xl text-zinc-950 tracking-tight">$748,000</p>
+                                <p class="text-[11px] text-zinc-500 font-mono">4,200 sq ft</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Property 4: Vanguard Glass Pavilion -->
+                    <div data-property-type="Estate" onclick="openApartment(4)" class="res-prop-card bg-white text-zinc-950 rounded-2xl p-4 sm:p-5 border border-zinc-200/90 hover:border-brand-accent hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group cursor-pointer shadow-md hover:shadow-2xl">
+                        <div class="h-52 overflow-hidden rounded-xl relative mb-4">
+                            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Vanguard Glass Pavilion">
+                            <span class="absolute top-4 left-4 bg-zinc-950/85 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-brand-accent border border-white/10 shadow-lg">
+                                Signature
+                            </span>
+                            <div class="absolute top-4 right-4 bg-zinc-950 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg group-hover:bg-brand-accent group-hover:text-zinc-950 transition-colors border border-white/10">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between px-1 pt-1">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-brand-accent block mb-1">Estate</span>
+                                <h3 class="font-serif text-xl sm:text-2xl text-zinc-950 font-medium mb-1 group-hover:text-brand-accent transition-colors">Vanguard Glass Pavilion</h3>
+                                <p class="text-zinc-500 text-xs font-light">1044 Park Ave, New York, NY</p>
+                            </div>
+                            <div class="text-right shrink-0 pl-2">
+                                <p class="font-serif font-medium text-xl sm:text-2xl text-zinc-950 tracking-tight">$1,850,000</p>
+                                <p class="text-[11px] text-zinc-500 font-mono">5,900 sq ft</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Property 5: Aethelgard Brutalist Manse (NEW) -->
+                    <div data-property-type="Estate" onclick="openApartment(5)" class="res-prop-card bg-white text-zinc-950 rounded-2xl p-4 sm:p-5 border border-zinc-200/90 hover:border-brand-accent hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group cursor-pointer shadow-md hover:shadow-2xl">
+                        <div class="h-52 overflow-hidden rounded-xl relative mb-4">
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Aethelgard Brutalist Manse">
+                            <span class="absolute top-4 left-4 bg-zinc-950/85 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-brand-accent border border-white/10 shadow-lg">
+                                Alpine Brutalist
+                            </span>
+                            <div class="absolute top-4 right-4 bg-zinc-950 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg group-hover:bg-brand-accent group-hover:text-zinc-950 transition-colors border border-white/10">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between px-1 pt-1">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-brand-accent block mb-1">Estate</span>
+                                <h3 class="font-serif text-xl sm:text-2xl text-zinc-950 font-medium mb-1 group-hover:text-brand-accent transition-colors">Aethelgard Brutalist Manse</h3>
+                                <p class="text-zinc-500 text-xs font-light">412 Highland Ave, Aspen, Colorado</p>
+                            </div>
+                            <div class="text-right shrink-0 pl-2">
+                                <p class="font-serif font-medium text-xl sm:text-2xl text-zinc-950 tracking-tight">$2,450,000</p>
+                                <p class="text-[11px] text-zinc-500 font-mono">6,400 sq ft</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Property 6: Mirador Horizon Penthouse (NEW) -->
+                    <div data-property-type="Penthouse" onclick="openApartment(6)" class="res-prop-card bg-white text-zinc-950 rounded-2xl p-4 sm:p-5 border border-zinc-200/90 hover:border-brand-accent hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group cursor-pointer shadow-md hover:shadow-2xl">
+                        <div class="h-52 overflow-hidden rounded-xl relative mb-4">
+                            <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Mirador Horizon Penthouse">
+                            <span class="absolute top-4 left-4 bg-zinc-950/85 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-brand-accent border border-white/10 shadow-lg">
+                                Waterfront
+                            </span>
+                            <div class="absolute top-4 right-4 bg-zinc-950 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg group-hover:bg-brand-accent group-hover:text-zinc-950 transition-colors border border-white/10">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between px-1 pt-1">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-brand-accent block mb-1">Penthouse</span>
+                                <h3 class="font-serif text-xl sm:text-2xl text-zinc-950 font-medium mb-1 group-hover:text-brand-accent transition-colors">Mirador Horizon Penthouse</h3>
+                                <p class="text-zinc-500 text-xs font-light">880 Brickell Key Dr, Miami, Florida</p>
+                            </div>
+                            <div class="text-right shrink-0 pl-2">
+                                <p class="font-serif font-medium text-xl sm:text-2xl text-zinc-950 tracking-tight">$1,280,000</p>
+                                <p class="text-[11px] text-zinc-500 font-mono">3,650 sq ft</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Property 7: Komorebi Zen Villa (NEW) -->
+                    <div data-property-type="Villa" onclick="openApartment(7)" class="res-prop-card bg-white text-zinc-950 rounded-2xl p-4 sm:p-5 border border-zinc-200/90 hover:border-brand-accent hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group cursor-pointer shadow-md hover:shadow-2xl">
+                        <div class="h-52 overflow-hidden rounded-xl relative mb-4">
+                            <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Komorebi Zen Villa">
+                            <span class="absolute top-4 left-4 bg-zinc-950/85 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-brand-accent border border-white/10 shadow-lg">
+                                Minimalist
+                            </span>
+                            <div class="absolute top-4 right-4 bg-zinc-950 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg group-hover:bg-brand-accent group-hover:text-zinc-950 transition-colors border border-white/10">
+                                <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-end justify-between px-1 pt-1">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-brand-accent block mb-1">Villa</span>
+                                <h3 class="font-serif text-xl sm:text-2xl text-zinc-950 font-medium mb-1 group-hover:text-brand-accent transition-colors">Komorebi Zen Villa</h3>
+                                <p class="text-zinc-500 text-xs font-light">1520 Olympic Blvd, Santa Monica, California</p>
+                            </div>
+                            <div class="text-right shrink-0 pl-2">
+                                <p class="font-serif font-medium text-xl sm:text-2xl text-zinc-950 tracking-tight">$1,650,000</p>
+                                <p class="text-[11px] text-zinc-500 font-mono">4,800 sq ft</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 140-Point Residential Quality Guarantee Section (Dark Obsidian Showcase) -->
+                <div class="mt-28 mb-20 reveal">
+                    <div class="bg-gradient-to-b from-zinc-950 to-black text-white rounded-3xl p-8 sm:p-14 border border-zinc-800 shadow-2xl">
+                        <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-12 pb-8 border-b border-white/10 gap-6">
+                            <div>
+                                <span class="text-brand-accent uppercase tracking-[0.25em] text-xs font-bold mb-2 block">
+                                    Verified Integrity
+                                </span>
+                                <h2 class="font-serif text-3xl sm:text-4xl font-light text-white">
+                                    The Sovereign Residential Standard
+                                </h2>
+                            </div>
+                            <p class="text-zinc-400 text-sm font-light max-w-md">
+                                Every residence in our portfolio undergoes 140 mechanical, thermal, and security inspections before client presentation.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div class="bg-zinc-900/80 border border-white/10 rounded-2xl p-6">
+                                <span class="text-[10px] font-mono text-brand-accent bg-brand-accent/10 px-2 py-0.5 rounded block w-fit mb-3">36 Checkpoints</span>
+                                <h4 class="font-serif text-lg text-white mb-2">Envelope & Shell</h4>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">Thermal infrared leak testing, acoustic double-glazing integrity, and seismic shear tie-down verification.</p>
+                            </div>
+
+                            <div class="bg-zinc-900/80 border border-white/10 rounded-2xl p-6">
+                                <span class="text-[10px] font-mono text-brand-accent bg-brand-accent/10 px-2 py-0.5 rounded block w-fit mb-3">42 Checkpoints</span>
+                                <h4 class="font-serif text-lg text-white mb-2">HVAC & Energy</h4>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">HEPA filtration, variable refrigerant flow calibration, and microgrid solar storage backup audits.</p>
+                            </div>
+
+                            <div class="bg-zinc-900/80 border border-white/10 rounded-2xl p-6">
+                                <span class="text-[10px] font-mono text-brand-accent bg-brand-accent/10 px-2 py-0.5 rounded block w-fit mb-3">34 Checkpoints</span>
+                                <h4 class="font-serif text-lg text-white mb-2">Terroir & Water</h4>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">Infinity pool pH telemetry, anti-slip travertine sealing, greywater reclamation, and arborist root audits.</p>
+                            </div>
+
+                            <div class="bg-zinc-900/80 border border-white/10 rounded-2xl p-6">
+                                <span class="text-[10px] font-mono text-brand-accent bg-brand-accent/10 px-2 py-0.5 rounded block w-fit mb-3">28 Checkpoints</span>
+                                <h4 class="font-serif text-lg text-white mb-2">Discretion & Escrow</h4>
+                                <p class="text-xs text-zinc-400 font-light leading-relaxed">Biometric access logs scrub, perimeter laser intrusion tests, vendor NDAs, and corporate trust compliance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Private Viewing Consultation Invitation -->
+                <div class="max-w-5xl mx-auto text-center reveal">
+                    <div class="bg-zinc-950 text-white rounded-3xl p-10 sm:p-16 border border-brand-accent/30 shadow-2xl relative overflow-hidden">
+                        <span class="text-brand-accent uppercase tracking-[0.25em] text-xs font-bold mb-3 block">Bespoke Acquisition</span>
+                        <h2 class="font-serif text-3xl sm:text-4xl font-light text-white mb-6">
+                            Schedule Confidential Residence Onboarding
+                        </h2>
+                        <p class="text-zinc-400 text-sm font-light max-w-xl mx-auto mb-8">
+                            Connect directly with an executive partner to arrange sealed private viewings, escrow verification, and personalized architectural dossier delivery.
+                        </p>
+                        <button onclick="openApartment(1)" class="btn-gold-ring px-8 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest font-semibold">
+                            Explore Featured Residence Walkthrough
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==========================================
+             PAGE: APARTMENT DETAIL 
+             ========================================== -->
+        <div id="page-apartment-detail" class="page-section">
+            <div id="apartment-detail-content"></div>
+        </div>
+
+        <!-- ==========================================
+             PAGE: PRICING 
+             ========================================== -->
+        <div id="page-pricing" class="page-section">
+            <section class="pt-40 pb-20 px-8 md:px-16 bg-white text-center border-b border-brand-border">
+                <div class="max-w-3xl mx-auto reveal">
+                    <p class="text-brand-accent font-bold tracking-[0.2em] uppercase text-xs mb-6">Investment</p>
+                    <h1 class="font-serif text-5xl lg:text-7xl text-brand-dark mb-8 leading-tight">Transparent, Simple Plans.</h1>
+                    <p class="text-brand-muted text-lg font-light">No surprises, no long-term commitments, just clear pricing designed around your needs.</p>
+                </div>
+            </section>
+
+            <!-- Pricing Grid -->
+            <section class="py-24 px-8 md:px-16 bg-brand-offwhite">
+                <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-0 border border-brand-border bg-white shadow-elegant reveal-up">
+                    
+                    <!-- Column 1 -->
+                    <div class="p-10 border-b md:border-b-0 md:border-r border-brand-border">
+                        <h3 class="font-serif text-2xl text-brand-dark mb-2">Property Management</h3>
+                        <p class="text-4xl font-light text-brand-dark mb-8 mt-4">$220.00 <span class="text-sm text-brand-muted">/mo</span></p>
+                        <button class="w-full border border-brand-dark text-xs font-bold uppercase tracking-widest py-3 mb-10 hover:bg-brand-dark hover:text-white transition-colors">See Early Bird Deal</button>
+                        
+                        <h4 class="font-bold text-sm mb-4">Full Leasing Services</h4>
+                        <ul class="space-y-3 text-sm text-brand-muted font-light">
+                            <li>Market Analysis & Pricing</li>
+                            <li>Marketing & Advertising</li>
+                            <li>Showings & Inquiry Handling</li>
+                            <li>Tenant Screening & Vetting</li>
+                            <li>Lease Drafting & Signing</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Column 2 (Highlighted Dark) -->
+                    <div class="p-10 bg-brand-dark text-white relative -mx-2 md:-mx-0 md:-mt-4 md:-mb-4 shadow-float z-10">
+                        <h3 class="font-serif text-2xl mb-2">Home Watch</h3>
+                        <p class="text-4xl font-light text-white mb-8 mt-4">$936.00 <span class="text-sm text-white/50">/mo</span></p>
+                        <button class="w-full bg-white text-brand-dark text-xs font-bold uppercase tracking-widest py-3 mb-10 hover:bg-brand-accent hover:text-white hover:border-brand-accent transition-colors">Get Started</button>
+                        
+                        <h4 class="font-bold text-sm mb-4">Stewardship</h4>
+                        <ul class="space-y-3 text-sm text-white/70 font-light">
+                            <li>Routine GPS-Verified Inspections</li>
+                            <li>Seasonal Property Readiness</li>
+                            <li>Proactive Storm Prep Checks</li>
+                            <li>Mail & Delivery Handling</li>
+                            <li>In-Person Vendor Monitoring</li>
+                            <li>Rapid Crisis Coordination</li>
+                        </ul>
+                    </div>
+
+                    <!-- Column 3 -->
+                    <div class="p-10">
+                        <h3 class="font-serif text-2xl text-brand-dark mb-2">ADU Compliance</h3>
+                        <p class="text-4xl font-light text-brand-dark mb-8 mt-4">$1620.00 <span class="text-sm text-brand-muted">/mo</span></p>
+                        <button class="w-full border border-brand-dark text-xs font-bold uppercase tracking-widest py-3 mb-10 hover:bg-brand-dark hover:text-white transition-colors">Get Started</button>
+                        
+                        <h4 class="font-bold text-sm mb-4">Operational Setup</h4>
+                        <ul class="space-y-3 text-sm text-brand-muted font-light">
+                            <li>Legal ADU Compliance & Wiring</li>
+                            <li>Custom Leases & Boundaries</li>
+                            <li>Tenant Dispute Prevention</li>
+                            <li>Smart Utility Cost Allocation</li>
+                            <li>ADU Rental Income Optimization</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <!-- ==========================================
+             PAGE: CONTACT 
+             ========================================== -->
+        <div id="page-contact" class="page-section">
+            <section class="pt-32 pb-24 px-8 md:px-16 bg-brand-dark text-white min-h-[90vh] flex items-center">
+                <div class="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-20">
+                    
+                    <div class="reveal-left flex flex-col justify-center">
+                        <h2 class="font-serif text-5xl md:text-7xl mb-6 leading-tight">Let's Go On A<br>Project Together.</h2>
+                        <p class="text-white/60 font-light text-lg mb-12 max-w-md">Connect with our enterprise architects to arrange a secure demonstration of the Aventine platform.</p>
+                        
+                        <div class="border-l border-white/20 pl-6 py-2">
+                            <p class="font-serif text-xl">New York (HQ)</p>
+                            <p class="text-sm text-white/50 font-light mt-2">One World Trade Center, Suite 4500<br>New York, NY 10007</p>
+                        </div>
+                    </div>
+
+                    <!-- Glassmorphism Form -->
+                    <div class="reveal-right bg-white/5 backdrop-blur-md p-10 lg:p-16 border border-white/10 rounded-sm">
+                        <form class="space-y-8" onsubmit="event.preventDefault(); alert('Form submitted.');">
+                            <div>
+                                <input type="text" placeholder="Name" class="w-full bg-transparent border-b border-white/20 pb-3 text-white placeholder:text-white/40 focus:outline-none focus:border-brand-accent transition-colors text-sm" required>
+                            </div>
+                            <div>
+                                <input type="email" placeholder="Email" class="w-full bg-transparent border-b border-white/20 pb-3 text-white placeholder:text-white/40 focus:outline-none focus:border-brand-accent transition-colors text-sm" required>
+                            </div>
+                            <div>
+                                <textarea placeholder="Message" rows="3" class="w-full bg-transparent border-b border-white/20 pb-3 text-white placeholder:text-white/40 focus:outline-none focus:border-brand-accent transition-colors text-sm resize-none" required></textarea>
+                            </div>
+                            <div class="pt-4">
+                                <button type="submit" class="btn-gold-ring px-10 py-4 text-xs font-bold uppercase tracking-widest w-full rounded-sm">
+                                    Send Message
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <!-- CTA SECTION -->
+        <section class="py-24 px-8 md:px-16 text-center border-t border-brand-border bg-white" id="global-cta">
+            <div class="max-w-3xl mx-auto reveal">
+                <h2 class="font-serif text-4xl text-brand-dark mb-6">Ready to Protect & Maintain Your Home?</h2>
+                <div class="flex justify-center gap-4 mt-10">
+                    <a href="#contact" class="btn-editorial inline-block bg-brand-dark text-white px-8 py-3 text-xs font-bold uppercase tracking-widest">
+                        Schedule A Visit
+                    </a>
+                    <a href="#pricing" class="btn-editorial inline-block border border-brand-dark text-brand-dark px-8 py-3 text-xs font-bold uppercase tracking-widest">
+                        View Plans
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-dark text-white pt-20 pb-10 px-8 md:px-16 mt-auto border-t border-white/10">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+            <div class="md:col-span-1">
+                <div class="flex items-center gap-2 mb-6">
+                    <span class="font-serif font-bold text-xl tracking-wide">Aventine.</span>
+                </div>
+                <p class="text-white/50 text-sm leading-relaxed mb-6 font-light">
+                    The software foundation for the world's most prestigious real estate portfolios.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="text-white/50 hover:text-white transition-colors"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+                    <a href="#" class="text-white/50 hover:text-white transition-colors"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+                    <a href="#" class="text-white/50 hover:text-white transition-colors"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="font-bold text-white mb-6 text-sm">Platform</h4>
+                <ul class="space-y-3 text-sm text-white/60 font-light">
+                    <li><a href="#commercial" class="hover:text-white transition-colors">Commercial</a></li>
+                    <li><a href="#residential" class="hover:text-white transition-colors">Residential</a></li>
+                    <li><a href="#pricing" class="hover:text-white transition-colors">Pricing</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-white mb-6 text-sm">Company</h4>
+                <ul class="space-y-3 text-sm text-white/60 font-light">
+                    <li><a href="#vision" class="hover:text-white transition-colors">About Us</a></li>
+                    <li><a href="#contact" class="hover:text-white transition-colors">Contact</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Service</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-white mb-6 text-sm">Legal</h4>
+                <ul class="space-y-3 text-sm text-white/60 font-light">
+                    <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto pt-8 border-t border-white/10 text-center">
+            <p class="text-xs text-white/30 font-light">© 2026 Aventine Technologies & Assets. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        const POPULAR_RESIDENCES = [
+            {
+                id: 1,
+                title: "Sekarwangi Sanctuary",
+                location: "2472 Newmarket Rd, Santa Ana, Illinois",
+                address: "2472 Newmarket Rd, Santa Ana, Illinois",
+                price: "$943,000",
+                period: "Est. Valuation",
+                type: "Villa",
+                beds: 4,
+                baths: 3,
+                sqft: "3,850 sq ft",
+                image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=1200&auto=format&fit=crop",
+                tag: "Exclusive",
+                description: "Nestled in pristine natural topography, Sekarwangi Sanctuary marries contemporary brutalist geometry with organic timber finishes. Featuring panoramic floor-to-ceiling glass expanses, an integrated infinity reflection basin, and subterranean climate-controlled wine cellars.",
+                amenities: [
+                    "Private Infinity Basin & Sun Deck",
+                    "Sub-Zero & Wolf Culinary Suite",
+                    "Autonomous Geothermal HVAC",
+                    "Biometric Perimeter & GPS Guard Dispatch",
+                    "Integrated Smart Lighting by Lutron",
+                    "Custom Italian Terrazzo Floors"
+                ],
+                gallery: [
+                    {
+                        id: "exterior",
+                        title: "Exterior Facade",
+                        area: "Grounds & Architecture",
+                        url: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=1200&auto=format&fit=crop",
+                        description: "Monolithic architectural profile with board-formed concrete, cantilevered cedar louvers, and manicured native landscaping."
+                    },
+                    {
+                        id: "living",
+                        title: "Grand Living Lounge",
+                        area: "Main Level",
+                        url: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=1200&auto=format&fit=crop",
+                        description: "Sunken formal lounge featuring double-height ceiling voids, custom terrazzo flooring, and panoramic glazing."
+                    },
+                    {
+                        id: "bedroom",
+                        title: "Primary Master Suite",
+                        area: "Upper East Wing",
+                        url: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=1200&auto=format&fit=crop",
+                        description: "Private primary retreat with acoustically insulated slatted timber paneling, concealed dressing room, and balcony outlook."
+                    },
+                    {
+                        id: "kitchen",
+                        title: "Gourmet Chef's Kitchen",
+                        area: "Culinary Wing",
+                        url: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1200&auto=format&fit=crop",
+                        description: "Custom fluted oak cabinetry, honed quartzite waterfall island, prep scullery, and integrated Sub-Zero appliances."
+                    },
+                    {
+                        id: "bathroom",
+                        title: "Spa & Soaking Bath",
+                        area: "Primary En-Suite",
+                        url: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?q=80&w=1200&auto=format&fit=crop",
+                        description: "Freestanding stone resin soaking tub, frameless rainfall wet room, and brushed champagne bronze fixtures."
+                    },
+                    {
+                        id: "pool",
+                        title: "Infinity Pool & Sun Deck",
+                        area: "Outdoor Grounds",
+                        url: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80&w=1200&auto=format&fit=crop",
+                        description: "Zero-edge heated saline swimming pool framed by silver travertine coping, shaded daybed cabanas, and fire feature."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Luwigiang Penthouse",
+                location: "2715 Peabody Rd, Syracuse, Connecticut",
+                address: "2715 Peabody Rd, Syracuse, Connecticut",
+                price: "$576,000",
+                period: "Est. Valuation",
+                type: "Penthouse",
+                beds: 3,
+                baths: 2,
+                sqft: "2,420 sq ft",
+                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200&auto=format&fit=crop",
+                tag: "Trending",
+                description: "Perched atop the Syracuse skyline, this sky residence delivers unimpeded 360-degree metropolitan panoramas. Dual cantilevered terraces expand the living envelope outdoors, while acoustic-dampened double glazing preserves absolute tranquility.",
+                amenities: [
+                    "Wrap-Around Skyline Sky Terrace",
+                    "Private High-Speed Elevator Dispatch",
+                    "Master Spa with Soaking Basalt Tub",
+                    "Full Concierge & Valet Reception",
+                    "Acoustic Studio-Grade Soundproofing",
+                    "Automated Solar Shade Arrays"
+                ],
+                gallery: [
+                    {
+                        id: "exterior",
+                        title: "Skyline Architecture",
+                        area: "Tower Exterior",
+                        url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200&auto=format&fit=crop",
+                        description: "Iconic glazed residential tower rising above the metropolitan skyline with private rooftop crown."
+                    },
+                    {
+                        id: "living",
+                        title: "Sky Lounge & Living Room",
+                        area: "Main Level",
+                        url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200&auto=format&fit=crop",
+                        description: "Expansive high-rise salon with wide-plank French oak flooring and floor-to-ceiling city vista windows."
+                    },
+                    {
+                        id: "bedroom",
+                        title: "Skyline Master Bedroom",
+                        area: "Private Wing",
+                        url: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?q=80&w=1200&auto=format&fit=crop",
+                        description: "High-floor sanctuary with corner panoramic glazing, automated blackout shades, and wool carpeting."
+                    },
+                    {
+                        id: "kitchen",
+                        title: "Chef's Bar & Open Kitchen",
+                        area: "Culinary Core",
+                        url: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=1200&auto=format&fit=crop",
+                        description: "Architectural matte cabinetry, induction cooktop island, wine storage column, and quartz cocktail bar."
+                    },
+                    {
+                        id: "bathroom",
+                        title: "Calacatta Marble Spa Bath",
+                        area: "Primary En-Suite",
+                        url: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=1200&auto=format&fit=crop",
+                        description: "Bookmatched Calacatta marble walls with floating basalt double vanity and frameless glass steam shower."
+                    },
+                    {
+                        id: "terrace",
+                        title: "Cantilevered Sky Terrace",
+                        area: "Outdoor Deck",
+                        url: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=1200&auto=format&fit=crop",
+                        description: "Private cantilevered observation terrace with structural glass balustrades offering 360-degree sunset views."
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Pelangi Coastal Villa",
+                location: "8910 Westheimer Rd, Santa Ana, Illinois",
+                address: "8910 Westheimer Rd, Santa Ana, Illinois",
+                price: "$748,000",
+                period: "Est. Valuation",
+                type: "Villa",
+                beds: 5,
+                baths: 4,
+                sqft: "4,200 sq ft",
+                image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1200&auto=format&fit=crop",
+                tag: "New Listing",
+                description: "An ode to coastal minimalism and serene geometry. Designed with an open double-height atrium, natural quartz counters, and seamlessly sheltered outdoor dining courtyards shielded from coastal gusts.",
+                amenities: [
+                    "Protected Courtyard & Fire Hearth",
+                    "Chef's Scullery & Prep Kitchen",
+                    "Heated Travertine Outdoor Patios",
+                    "Solar Microgrid & Tesla Powerwall",
+                    "Custom Millwork & Cedar Siding",
+                    "Smart Water Filtration System"
+                ],
+                gallery: [
+                    {
+                        id: "exterior",
+                        title: "Coastal Villa Grounds",
+                        area: "Exterior Facade",
+                        url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=1200&auto=format&fit=crop",
+                        description: "Crisp architectural stucco and natural stone envelope nestled amongst Mediterranean olive trees and sea breezes."
+                    },
+                    {
+                        id: "living",
+                        title: "Sunlit Open Living Room",
+                        area: "Main Level",
+                        url: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1200&auto=format&fit=crop",
+                        description: "Warm, light-flooded open salon with organic curved furnishings, linen drapes, and seamless patio doors."
+                    },
+                    {
+                        id: "bedroom",
+                        title: "Oceanview Master Bedroom",
+                        area: "Upper Quarter",
+                        url: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1200&auto=format&fit=crop",
+                        description: "Relaxed coastal suite with custom bleached-oak millwork, walk-in closet, and private garden balcony."
+                    },
+                    {
+                        id: "kitchen",
+                        title: "Artisanal Kitchen & Dining",
+                        area: "Dining Pavilion",
+                        url: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=1200&auto=format&fit=crop",
+                        description: "Open oak shelving, honed terrazzo preparation counters, and an expansive dining space for entertaining."
+                    },
+                    {
+                        id: "bathroom",
+                        title: "Limestone En-Suite Bath",
+                        area: "Spa Wing",
+                        url: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?q=80&w=1200&auto=format&fit=crop",
+                        description: "Textured beige limestone tiles, dual porcelain vessel basins, and a private enclosed courtyard lightwell."
+                    },
+                    {
+                        id: "pool",
+                        title: "Trellis Patio & Plunge Pool",
+                        area: "Outdoor Courtyard",
+                        url: "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=1200&auto=format&fit=crop",
+                        description: "Shaded pergola lounge with outdoor kitchen, daybeds, and private turquoise heated plunge pool."
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Vanguard Glass Pavilion",
+                location: "1044 Park Ave, New York, NY",
+                address: "1044 Park Ave, New York, NY",
+                price: "$1,850,000",
+                period: "Est. Valuation",
+                type: "Estate",
+                beds: 6,
+                baths: 5,
+                sqft: "5,900 sq ft",
+                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1200&auto=format&fit=crop",
+                tag: "Signature",
+                description: "An architectural landmark crafted with structural low-iron glass and blackened stainless steel. Spanning nearly 6,000 square feet of curated luxury, including an internal Zen atrium, private library, and multi-vehicle gallery garage.",
+                amenities: [
+                    "Internal Zen Garden & Light Well",
+                    "Gallery Showroom Auto Vault",
+                    "Triple-Height Library with Catwalk",
+                    "Commercial Grade Air Purification",
+                    "Dedicated On-Site Security Suite",
+                    "Comprehensive Smart Home Automation"
+                ],
+                gallery: [
+                    {
+                        id: "exterior",
+                        title: "Glass Pavilion Facade",
+                        area: "Exterior Architecture",
+                        url: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1200&auto=format&fit=crop",
+                        description: "Precision-engineered curtain-wall glass facade suspended on blackened architectural steel columns."
+                    },
+                    {
+                        id: "living",
+                        title: "Modernist Great Room",
+                        area: "Central Pavilion",
+                        url: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?q=80&w=1200&auto=format&fit=crop",
+                        description: "Monumental open volume featuring museum-grade lighting, micro-cement floors, and floating fireplace."
+                    },
+                    {
+                        id: "bedroom",
+                        title: "Slatted Primary Suite",
+                        area: "Private Atrium Wing",
+                        url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop",
+                        description: "Japanese-inspired minimalist bedroom with custom walnut acoustic louvers and tranquil garden views."
+                    },
+                    {
+                        id: "kitchen",
+                        title: "Anthracite Minimalist Kitchen",
+                        area: "Culinary Core",
+                        url: "https://images.unsplash.com/photo-1565183997392-2f6f122e5912?q=80&w=1200&auto=format&fit=crop",
+                        description: "Monolithic island in brushed anthracite granite with Gaggenau 400-series flush-mount appliances."
+                    },
+                    {
+                        id: "bathroom",
+                        title: "Slate Wet Room & Spa",
+                        area: "Master Spa Bath",
+                        url: "https://images.unsplash.com/photo-1620626011761-996317b8d101?q=80&w=1200&auto=format&fit=crop",
+                        description: "Walk-in slate wet room with dual overhead monsoon showers and deep Japanese soaking basin."
+                    },
+                    {
+                        id: "courtyard",
+                        title: "Sculpture Courtyard & Terrace",
+                        area: "Outdoor Grounds",
+                        url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop",
+                        description: "Reflective water basin, manicured bamboo thickets, and outdoor architectural entertaining terrace."
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "Aethelgard Brutalist Manse",
+                location: "412 Highland Ave, Aspen, Colorado",
+                address: "412 Highland Ave, Aspen, Colorado",
+                price: "$2,450,000",
+                period: "Est. Valuation",
+                type: "Estate",
+                beds: 5,
+                baths: 5,
+                sqft: "6,400 sq ft",
+                image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=1200&auto=format&fit=crop",
+                tag: "Landmark",
+                description: "Monolithic board-formed concrete embedded into the Aspen alpine ridge. Featuring double-height structural glass curtain walls, cantilevered cedar sun terraces, geothermal hydronic heating, and an internal heated basalt lap pool.",
+                amenities: [
+                    "Cantilevered Heated Alpine Terrace",
+                    "Subterranean Basalt Lap Pool & Sauna",
+                    "Board-Formed Concrete Fireplace Void",
+                    "Smart Geothermal Snow-Melt Driveway",
+                    "Custom Blackened Steel Wine Cellar",
+                    "Triple-Glazed Low-Iron Alpine Glass"
+                ],
+                gallery: [
+                    {
+                        id: "exterior",
+                        title: "Alpine Brutalist Facade",
+                        area: "Grounds & Architecture",
+                        url: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=1200&auto=format&fit=crop",
+                        description: "Striking cantilevered architecture combining rough-sawn cedar cladding with monolithic board-formed concrete."
+                    },
+                    {
+                        id: "living",
+                        title: "Double-Height Great Hall",
+                        area: "Central Pavilion",
+                        url: "https://images.unsplash.com/photo-1600210492493-0946911123ea?q=80&w=1200&auto=format&fit=crop",
+                        description: "Monumental living space framed by twenty-foot glass walls, wide-plank smoked oak flooring, and central hearth."
+                    },
+                    {
+                        id: "bedroom",
+                        title: "Alpine Vista Primary Suite",
+                        area: "Upper East Wing",
+                        url: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=1200&auto=format&fit=crop",
+                        description: "Secluded retreat with panoramic mountain sunrise views, integrated wool acoustic headboard, and private balcony."
+                    },
+                    {
+                        id: "kitchen",
+                        title: "Honed Quartzite Chef's Bar",
+                        area: "Culinary Core",
+                        url: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=1200&auto=format&fit=crop",
+                        description: "Brushed quartzite island with custom dark fumed oak cabinetry, prep scullery, and Gaggenau induction suites."
+                    },
+                    {
+                        id: "bathroom",
+                        title: "Basalt Spa & Soaking Tub",
+                        area: "Primary En-Suite",
+                        url: "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?q=80&w=1200&auto=format&fit=crop",
+                        description: "Monolithic carved stone soaking tub positioned before floor-to-ceiling forest lightwells with heated travertine floors."
+                    },
+                    {
+                        id: "terrace",
+                        title: "Heated Observation Deck",
+                        area: "Outdoor Grounds",
+                        url: "https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=1200&auto=format&fit=crop",
+                        description: "Zero-barrier heated flagstone terrace featuring linear gas fire ribbons and unobstructed views of the Continental Divide."
+                    }
+                ]
+            },
+            {
+                id: 6,
+                title: "Mirador Horizon Penthouse",
+                location: "880 Brickell Key Dr, Miami, Florida",
+                address: "880 Brickell Key Dr, Miami, Florida",
+                price: "$1,280,000",
+                period: "Est. Valuation",
+                type: "Penthouse",
+                beds: 4,
+                baths: 4,
+                sqft: "3,650 sq ft",
+                image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=1200&auto=format&fit=crop",
+                tag: "Waterfront",
+                description: "Suspended 45 stories above Biscayne Bay, Mirador Horizon is an aerodynamic glass crown delivering 360-degree Atlantic horizons. Boasting private high-speed elevator dispatch, wrap-around deep terraces, and custom Italian calacatta marble appointments.",
+                amenities: [
+                    "Wrap-Around Bayview Sky Terrace",
+                    "Private High-Speed Direct Foyer Elevator",
+                    "Calacatta Gold Bookmatched Bathrooms",
+                    "24-Hour Valet, Concierge & Yacht Slip Privileges",
+                    "Acoustic Studio-Grade Sound Insulation",
+                    "Automated Motorized Solar Louver Arrays"
+                ],
+                gallery: [
+                    {
+                        id: "exterior",
+                        title: "Waterfront Glass Tower",
+                        area: "Tower Exterior",
+                        url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=1200&auto=format&fit=crop",
+                        description: "Sleek sculptural glass tower perched directly on the Biscayne Bay waterfront with private deep-water marina."
+                    },
+                    {
+                        id: "living",
+                        title: "Biscayne Bay Sky Lounge",
+                        area: "Main Level",
+                        url: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=1200&auto=format&fit=crop",
+                        description: "Breathtaking corner living salon with ultra-clear low-iron glass walls framing endless turquoise oceanic waters."
+                    },
+                    {
+                        id: "bedroom",
+                        title: "Horizon Master Quarters",
+                        area: "Private Wing",
+                        url: "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1200&auto=format&fit=crop",
+                        description: "Curved panoramic glass bedroom with custom bleached oak millwork, automated blackout drapes, and skyline vistas."
+                    },
+                    {
+                        id: "kitchen",
+                        title: "Calacatta Gold Culinary Bar",
+                        area: "Culinary Core",
+                        url: "https://images.unsplash.com/photo-1556909212-d5b604d0c90d?q=80&w=1200&auto=format&fit=crop",
+                        description: "Bookmatched Calacatta Gold waterfall preparation island, integrated Miele appliances, and concealed wine vault."
+                    },
+                    {
+                        id: "bathroom",
+                        title: "Bayfront Marble Steam Spa",
+                        area: "Primary En-Suite",
+                        url: "https://images.unsplash.com/photo-1584622781564-1d987f7333c1?q=80&w=1200&auto=format&fit=crop",
+                        description: "Double vanity in floating honed marble with freestanding sculptural soaking tub overlooking the Atlantic horizon."
+                    },
+                    {
+                        id: "terrace",
+                        title: "Cantilevered Sunset Sky Deck",
+                        area: "Outdoor Grounds",
+                        url: "https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=1200&auto=format&fit=crop",
+                        description: "Expansive outdoor deck with frameless glass balustrades, integrated daybeds, and private sunset cocktail bar."
+                    }
+                ]
+            },
+            {
+                id: 7,
+                title: "Komorebi Zen Villa",
+                location: "1520 Olympic Blvd, Santa Monica, California",
+                address: "1520 Olympic Blvd, Santa Monica, California",
+                price: "$1,650,000",
+                period: "Est. Valuation",
+                type: "Villa",
+                beds: 5,
+                baths: 4,
+                sqft: "4,800 sq ft",
+                image: "https://images.unsplash.com/photo-1600585152220-90363fe7e115?q=80&w=1200&auto=format&fit=crop",
+                tag: "Minimalist",
+                description: "An architectural meditation on natural light and organic materials. Handcrafted cedar timbers, private courtyard bamboo groves, raked gravel light wells, and seamless shoji-inspired sliding walls define this serene Southern California sanctuary.",
+                amenities: [
+                    "Enclosed Zen Rock Garden & Light Wells",
+                    "Japanese Hinoki Cedar Soaking Tub",
+                    "Continuous Indoor-Outdoor Shoji Glazing",
+                    "Subterranean Soundproof Meditation Studio",
+                    "Zero-Net Energy Solar Microgrid",
+                    "Purified Rainwater Recovery Cistern"
+                ],
+                gallery: [
+                    {
+                        id: "exterior",
+                        title: "Zen Courtyard Facade",
+                        area: "Exterior Grounds",
+                        url: "https://images.unsplash.com/photo-1600585152220-90363fe7e115?q=80&w=1200&auto=format&fit=crop",
+                        description: "Warm cedar slats, hand-troweled stucco, and tranquil reflecting pools sheltered behind private entry gates."
+                    },
+                    {
+                        id: "living",
+                        title: "Sunlit Pavilion Living Room",
+                        area: "Main Level",
+                        url: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=1200&auto=format&fit=crop",
+                        description: "Light-filled open salon featuring minimalist low-profile furnishings, natural linen partitions, and tatami accents."
+                    },
+                    {
+                        id: "bedroom",
+                        title: "Slatted Timber Primary Suite",
+                        area: "Private Garden Wing",
+                        url: "https://images.unsplash.com/photo-1560185127-6ed189bf02f4?q=80&w=1200&auto=format&fit=crop",
+                        description: "Acoustically dampened bedroom with custom white oak wall cladding, concealed wardrobe, and private courtyard outlook."
+                    },
+                    {
+                        id: "kitchen",
+                        title: "Honed Terrazzo & Oak Kitchen",
+                        area: "Culinary Core",
+                        url: "https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?q=80&w=1200&auto=format&fit=crop",
+                        description: "Minimalist island in honed neutral terrazzo with fluted oak cabinetry and integrated induction preparation surfaces."
+                    },
+                    {
+                        id: "bathroom",
+                        title: "Hinoki Cedar Bath & Spa",
+                        area: "Master Spa",
+                        url: "https://images.unsplash.com/photo-1600585152915-d208bec867a1?q=80&w=1200&auto=format&fit=crop",
+                        description: "Custom aromatic hinoki cedar soaking tub, frameless rainfall wet room, and pebble garden lightwell."
+                    },
+                    {
+                        id: "courtyard",
+                        title: "Bamboo Garden & Reflection Pool",
+                        area: "Outdoor Grounds",
+                        url: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?q=80&w=1200&auto=format&fit=crop",
+                        description: "Sculptural Japanese black pine, raked granite gravel, and tranquil koi pond flanked by cedar boardwalks."
+                    }
+                ]
+            }
+        ];
+
+        let activeApartmentData = null;
+        let activeRoomIndex = 0;
+
+        function setDetailRoom(idx) {
+            if (!activeApartmentData || !activeApartmentData.gallery || !activeApartmentData.gallery[idx]) return;
+            activeRoomIndex = idx;
+            const room = activeApartmentData.gallery[idx];
+            
+            const mainImg = document.getElementById('detail-main-img');
+            const roomCounter = document.getElementById('detail-room-counter');
+            const roomAreaBadge = document.getElementById('detail-room-area-badge');
+            const roomTitle = document.getElementById('detail-room-title');
+            const roomDesc = document.getElementById('detail-room-desc');
+            const roomAreaTag = document.getElementById('detail-room-area-tag');
+
+            if (mainImg) mainImg.src = room.url;
+            if (roomCounter) roomCounter.textContent = `${idx + 1} / ${activeApartmentData.gallery.length}`;
+            if (roomAreaBadge) roomAreaBadge.textContent = `${activeApartmentData.title} • ${room.area}`;
+            if (roomTitle) roomTitle.textContent = room.title;
+            if (roomDesc) roomDesc.textContent = room.description;
+            if (roomAreaTag) roomAreaTag.textContent = room.area;
+
+            // Update pills
+            document.querySelectorAll('.room-nav-pill').forEach((pill, i) => {
+                if (i === idx) {
+                    pill.className = "room-nav-pill px-4 py-2 rounded-full text-xs font-semibold tracking-wider shrink-0 transition-all duration-200 flex items-center gap-1.5 bg-brand-accent text-brand-dark font-bold shadow-lg shadow-brand-accent/20";
+                } else {
+                    pill.className = "room-nav-pill px-4 py-2 rounded-full text-xs font-semibold tracking-wider shrink-0 transition-all duration-200 flex items-center gap-1.5 bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10";
+                }
+            });
+
+            // Update thumbnails
+            document.querySelectorAll('.room-thumb-card').forEach((thumb, i) => {
+                if (i === idx) {
+                    thumb.classList.add('border-brand-accent', 'ring-2', 'ring-brand-accent/60', 'shadow-lg');
+                    thumb.classList.remove('border-white/10');
+                } else {
+                    thumb.classList.remove('border-brand-accent', 'ring-2', 'ring-brand-accent/60', 'shadow-lg');
+                    thumb.classList.add('border-white/10');
+                }
+            });
+
+            // Update walkthrough cards
+            document.querySelectorAll('.walkthrough-card').forEach((card, i) => {
+                if (i === idx) {
+                    card.classList.add('border-brand-accent', 'ring-2', 'ring-brand-accent/50');
+                    card.classList.remove('border-white/10');
+                } else {
+                    card.classList.remove('border-brand-accent', 'ring-2', 'ring-brand-accent/50');
+                    card.classList.add('border-white/10');
+                }
+            });
+        }
+
+        function cycleDetailRoom(delta) {
+            if (!activeApartmentData || !activeApartmentData.gallery) return;
+            const total = activeApartmentData.gallery.length;
+            const nextIdx = (activeRoomIndex + delta + total) % total;
+            setDetailRoom(nextIdx);
+        }
+
+        function scrollToGalleryHero() {
+            const el = document.getElementById('detail-gallery-hero');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function openApartment(id) {
+            const property = POPULAR_RESIDENCES.find(p => p.id === Number(id)) || POPULAR_RESIDENCES[0];
+            activeApartmentData = property;
+            activeRoomIndex = 0;
+
+            const container = document.getElementById('apartment-detail-content');
+            if (!container) return;
+
+            const galleryItems = (property.gallery && property.gallery.length) ? property.gallery : [
+                { id: "main", title: "Exterior Facade", area: "Grounds", url: property.image, description: property.description }
+            ];
+            const initialRoom = galleryItems[0];
+            const otherProperties = POPULAR_RESIDENCES.filter(p => p.id !== property.id);
+
+            container.innerHTML = `
+                <div id="detail-gallery-hero" class="bg-[#090a0f] text-white pt-32 pb-32 min-h-screen">
+                    <div class="max-w-7xl mx-auto px-8 md:px-16">
+                        
+                        <!-- Breadcrumb & Top Bar -->
+                        <div class="flex items-center justify-between pb-6 mb-6 border-b border-white/10">
+                            <button onclick="navigateTo('#residential')" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-bold text-[#090a0f] bg-white hover:bg-[#c5a880] transition-all shadow-xl hover:shadow-2xl hover:-translate-x-1 duration-200">
+                                <i data-lucide="arrow-left" class="w-4 h-4 stroke-[2.5]"></i>
+                                <span>Back to Residences</span>
+                            </button>
+                            <div class="flex items-center gap-4">
+                                <span class="text-xs font-bold uppercase tracking-widest px-3 py-1 bg-white/10 text-brand-accent rounded-full border border-white/10">
+                                    ${property.tag || property.type}
+                                </span>
+                                <span class="text-2xl font-serif text-white">${property.price}</span>
+                            </div>
+                        </div>
+
+                        <!-- Room Navigation Pills -->
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between gap-4 mb-2.5">
+                                <span class="text-[11px] uppercase tracking-[0.2em] text-brand-accent font-bold flex items-center gap-2">
+                                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                                    <span>Explore Distinct Rooms & Spaces (${galleryItems.length})</span>
+                                </span>
+                                <span class="text-xs text-white/40 font-mono hidden sm:inline-block">
+                                    Active: <span id="detail-room-tag-indicator">${initialRoom.title}</span>
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-2 overflow-x-auto pb-2 hide-scrollbar">
+                                ${galleryItems.map((room, idx) => `
+                                    <button
+                                        onclick="setDetailRoom(${idx})"
+                                        class="room-nav-pill px-4 py-2 rounded-full text-xs font-semibold tracking-wider shrink-0 transition-all duration-200 flex items-center gap-1.5 ${
+                                            idx === 0 
+                                                ? 'bg-brand-accent text-brand-dark font-bold shadow-lg shadow-brand-accent/20' 
+                                                : 'bg-white/5 text-white/60 hover:text-white hover:bg-white/10 border border-white/10'
+                                        }"
+                                    >
+                                        <span>${room.title}</span>
+                                        <span class="text-[10px] px-1.5 py-0.2 rounded-full ${idx === 0 ? 'bg-black/20 text-brand-dark' : 'bg-white/10 text-white/50'}">0${idx + 1}</span>
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Gallery Hero Section -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+                            
+                            <!-- Main High-Res Photo Display -->
+                            <div class="lg:col-span-2 h-[420px] lg:h-[540px] rounded-2xl overflow-hidden border border-white/10 relative group bg-black shadow-2xl">
+                                <img id="detail-main-img" src="${initialRoom.url}" alt="${property.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                                
+                                <!-- Top Bar Badges -->
+                                <div class="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
+                                    <div class="bg-brand-dark/85 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-medium uppercase tracking-wider text-white border border-white/10 flex items-center gap-1.5 pointer-events-auto shadow-lg">
+                                        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-brand-accent"></i>
+                                        <span id="detail-room-area-badge">${property.title} • ${initialRoom.area}</span>
+                                    </div>
+                                    <div id="detail-room-counter" class="bg-brand-dark/85 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-mono font-medium text-white border border-white/10 pointer-events-auto shadow-lg">
+                                        1 / ${galleryItems.length}
+                                    </div>
+                                </div>
+
+                                <!-- Prev / Next Arrows -->
+                                <button onclick="cycleDetailRoom(-1)" aria-label="Previous Room" class="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 hover:bg-brand-accent text-white hover:text-brand-dark backdrop-blur-md border border-white/20 flex items-center justify-center transition-all shadow-xl opacity-80 group-hover:opacity-100">
+                                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="cycleDetailRoom(1)" aria-label="Next Room" class="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 hover:bg-brand-accent text-white hover:text-brand-dark backdrop-blur-md border border-white/20 flex items-center justify-center transition-all shadow-xl opacity-80 group-hover:opacity-100">
+                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </button>
+
+                                <!-- Bottom Room Info Gradient -->
+                                <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-[#090a0f] via-[#090a0f]/80 to-transparent pt-12 pb-5 px-6">
+                                    <span id="detail-room-area-tag" class="text-[10px] uppercase tracking-widest text-brand-accent font-bold block mb-1">${initialRoom.area}</span>
+                                    <h3 id="detail-room-title" class="font-serif text-2xl lg:text-3xl font-light text-white">${initialRoom.title}</h3>
+                                    <p id="detail-room-desc" class="text-white/70 text-xs sm:text-sm font-light max-w-xl line-clamp-2 mt-1">${initialRoom.description}</p>
+                                </div>
+                            </div>
+
+                            <!-- Thumbnails Grid (All 6 Distinct Rooms) -->
+                            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-3 h-full">
+                                ${galleryItems.map((room, idx) => `
+                                    <div onclick="setDetailRoom(${idx})" class="room-thumb-card h-28 lg:h-[168px] rounded-xl overflow-hidden border cursor-pointer relative group transition-all duration-300 ${idx === 0 ? 'border-brand-accent ring-2 ring-brand-accent/60 shadow-lg' : 'border-white/10 hover:border-white/40'}">
+                                        <img src="${room.url}" alt="${room.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-end p-2.5">
+                                            <span class="text-[11px] font-bold text-white truncate">${room.title}</span>
+                                            <span class="text-[9px] uppercase tracking-wider text-brand-accent font-medium truncate">${room.area}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Information & Specs -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16 items-start mb-20">
+                            <div class="lg:col-span-2 space-y-10">
+                                <div>
+                                    <p class="text-xs uppercase tracking-[0.25em] text-brand-accent font-bold mb-2">${property.type} • ${property.period}</p>
+                                    <h1 class="font-serif text-4xl lg:text-5xl font-light text-white mb-4">${property.title}</h1>
+                                    <p class="text-white/60 text-sm flex items-center gap-2 font-light">
+                                        <i data-lucide="map-pin" class="w-4 h-4 text-brand-accent"></i>
+                                        <span>${property.location}</span>
+                                    </p>
+                                </div>
+
+                                <!-- Specs Grid -->
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 rounded-2xl bg-white/5 border border-white/10 text-center sm:text-left">
+                                    <div class="border-r border-white/10 pr-2">
+                                        <span class="text-[10px] uppercase tracking-widest text-white/50 block mb-1">Bedrooms</span>
+                                        <span class="font-serif text-xl sm:text-2xl text-white font-medium">${property.beds} Beds</span>
+                                    </div>
+                                    <div class="sm:border-r border-white/10 sm:pr-2">
+                                        <span class="text-[10px] uppercase tracking-widest text-white/50 block mb-1">Bathrooms</span>
+                                        <span class="font-serif text-xl sm:text-2xl text-white font-medium">${property.baths} Baths</span>
+                                    </div>
+                                    <div class="border-r border-white/10 pr-2 mt-4 sm:mt-0">
+                                        <span class="text-[10px] uppercase tracking-widest text-white/50 block mb-1">Total Space</span>
+                                        <span class="font-serif text-xl sm:text-2xl text-white font-medium">${property.sqft}</span>
+                                    </div>
+                                    <div class="mt-4 sm:mt-0">
+                                        <span class="text-[10px] uppercase tracking-widest text-white/50 block mb-1">Asset Status</span>
+                                        <span class="font-serif text-xl sm:text-2xl text-brand-accent font-medium">Verified</span>
+                                    </div>
+                                </div>
+
+                                <!-- Story -->
+                                <div class="border-t border-white/10 pt-8">
+                                    <h2 class="font-serif text-2xl text-white mb-4">Architectural Overview</h2>
+                                    <p class="text-white/70 font-light text-base leading-relaxed">${property.description}</p>
+                                </div>
+
+                                <!-- Amenities -->
+                                <div class="border-t border-white/10 pt-8">
+                                    <h2 class="font-serif text-2xl text-white mb-6">Stewardship & Amenities</h2>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        ${property.amenities.map(a => `
+                                            <div class="flex items-center gap-3 p-3.5 rounded-xl bg-white/5 border border-white/5">
+                                                <i data-lucide="check-circle-2" class="w-4 h-4 text-brand-accent shrink-0"></i>
+                                                <span class="text-xs sm:text-sm text-white/80 font-light">${a}</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Sticky Card -->
+                            <div class="sticky top-28 bg-[#0a0a0c] border border-white/15 p-8 rounded-2xl shadow-float space-y-6">
+                                <div>
+                                    <span class="text-[11px] uppercase tracking-widest text-white/50 block mb-1">Acquisition / Lease</span>
+                                    <p class="font-serif text-3xl sm:text-4xl text-white font-medium">${property.price}</p>
+                                    <span class="text-xs text-brand-accent font-medium">${property.period}</span>
+                                </div>
+
+                                <div class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2 text-xs text-white/80">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-white/50">Escrow Boundary:</span>
+                                        <span class="font-medium text-white">Direct Advisory</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-white/50">Inspection Status:</span>
+                                        <span class="font-medium text-brand-accent">140 Checkpoints Passed</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-white/50">Confidentiality:</span>
+                                        <span class="font-medium text-white">Sealed NDA</span>
+                                    </div>
+                                </div>
+
+                                <a href="#contact" class="btn-editorial block text-center bg-white text-brand-dark py-4 rounded-lg text-xs font-bold uppercase tracking-widest border border-white shadow-xl hover:bg-brand-accent hover:text-white transition-all">
+                                    Schedule Private Visit
+                                </a>
+
+                                <button onclick="navigateTo('#residential')" class="w-full py-3 text-xs uppercase tracking-widest font-bold border border-white/20 hover:border-white text-white bg-white/5 hover:bg-white/10 rounded-lg transition-all flex items-center justify-center gap-2">
+                                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                                    <span>Return to Catalog</span>
+                                </button>
+
+                                <div class="border-t border-white/10 pt-4 text-center">
+                                    <p class="text-[11px] text-white/50">Direct Partner Desk: <span class="text-white font-mono">+1 (415) 890-4420</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Room-by-Room Architectural Walkthrough Showcase Grid -->
+                        <div class="border-t border-white/10 pt-16 mb-20">
+                            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
+                                <div>
+                                    <span class="text-brand-accent uppercase tracking-[0.25em] text-xs font-bold mb-2 block">
+                                        Interior & Exterior Catalog
+                                    </span>
+                                    <h2 class="font-serif text-3xl sm:text-4xl text-white font-light">
+                                        Room-by-Room Architectural Tour
+                                    </h2>
+                                </div>
+                                <p class="text-white/50 text-xs sm:text-sm max-w-md font-light">
+                                    Detailed inspection of every distinct living volume within ${property.title}. Click any area to view in high definition above.
+                                </p>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                ${galleryItems.map((room, idx) => `
+                                    <div 
+                                        onclick="setDetailRoom(${idx}); scrollToGalleryHero();"
+                                        class="walkthrough-card bg-white/5 rounded-2xl overflow-hidden border transition-all duration-300 group cursor-pointer flex flex-col justify-between ${
+                                            idx === 0 ? 'border-brand-accent ring-2 ring-brand-accent/50 shadow-xl' : 'border-white/10 hover:border-white/30 hover:-translate-y-1'
+                                        }"
+                                    >
+                                        <div class="h-56 overflow-hidden relative">
+                                            <img 
+                                                src="${room.url}" 
+                                                alt="${room.title}" 
+                                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                            />
+                                            <span class="absolute top-3 left-3 bg-brand-dark/85 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-brand-accent border border-white/10">
+                                                ${room.area}
+                                            </span>
+                                        </div>
+                                        
+                                        <div class="p-5 flex-grow flex flex-col justify-between">
+                                            <div>
+                                                <h3 class="font-serif text-xl text-white font-medium mb-2 group-hover:text-brand-accent transition-colors">
+                                                    ${room.title}
+                                                </h3>
+                                                <p class="text-white/60 text-xs leading-relaxed font-light mb-4">
+                                                    ${room.description}
+                                                </p>
+                                            </div>
+
+                                            <div class="flex items-center justify-between pt-3 border-t border-white/10 text-xs text-white/70">
+                                                <span class="text-brand-accent font-medium flex items-center gap-1 group-hover:underline">
+                                                    <span>Focus on This Room</span>
+                                                    <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                                                </span>
+                                                <span class="text-white/40 font-mono text-[11px]">0${idx + 1} / 0${galleryItems.length}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Similar Residences -->
+                        <div class="border-t border-white/10 pt-16">
+                            <h3 class="font-serif text-2xl text-white mb-8">Similar Featured Residences</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                                ${otherProperties.slice(0, 3).map(item => `
+                                    <div onclick="openApartment(${item.id})" class="bg-brand-darker rounded-2xl overflow-hidden border border-white/10 hover:border-brand-accent hover:-translate-y-1 transition-all cursor-pointer group flex flex-col justify-between">
+                                        <div class="h-48 overflow-hidden relative">
+                                            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                            <span class="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white">
+                                                ${item.tag}
+                                            </span>
+                                        </div>
+                                        <div class="p-4">
+                                            <h4 class="font-serif text-lg text-white font-medium group-hover:text-brand-accent transition-colors">${item.title}</h4>
+                                            <p class="text-white/50 text-xs font-light mb-3 truncate">${item.location}</p>
+                                            <div class="flex items-center justify-between pt-2 border-t border-white/10">
+                                                <span class="text-base font-semibold text-white">${item.price}</span>
+                                                <span class="text-xs text-white/50">${item.sqft}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            navigateTo('#apartment-detail');
+            lucide.createIcons();
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        // --- Header Scroll Effect ---
+        const header = document.getElementById('main-header');
+        
+        // Header maintains permanent dark luxury glassmorphism - solid dark background so text is always clear
+        function updateHeaderStyle() {
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-2xl');
+            } else {
+                header.classList.remove('shadow-2xl');
+            }
+        }
+
+        window.addEventListener('scroll', updateHeaderStyle);
+
+        // --- Intersection Observer for Scroll Animations ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        function observeElements() {
+            document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-up').forEach((el) => {
+                observer.observe(el);
+            });
+        }
+
+        function triggerVisibleAnimations() {
+            document.querySelectorAll('.page-section.active .reveal, .page-section.active .reveal-left, .page-section.active .reveal-right, .page-section.active .reveal-up').forEach((el) => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight) {
+                    setTimeout(() => { el.classList.add('active'); }, 50);
+                }
+            });
+        }
+
+        // --- Single Page Application Routing Logic ---
+        function navigateTo(hash) {
+            if (!hash || hash === '#') hash = '#home';
+            
+            let targetPageId = 'page-' + hash.substring(1);
+            let targetPage = document.getElementById(targetPageId);
+            const globalCta = document.getElementById('global-cta');
+            
+            if (!targetPage) {
+                targetPage = document.getElementById('page-home');
+                hash = '#home';
+            }
+
+            // Hide all pages & reset animations
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active');
+                page.querySelectorAll('.active').forEach(el => {
+                    if(el.classList.contains('reveal') || el.classList.contains('reveal-left') || el.classList.contains('reveal-right') || el.classList.contains('reveal-up')) {
+                         el.classList.remove('active');
+                    }
+                });
+            });
+
+            // Update nav active states (visible gold pill highlight around active link)
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const linkHref = link.getAttribute('href');
+                if (linkHref === hash || (hash === '#apartment-detail' && linkHref === '#residential')) {
+                    link.classList.add('active-link');
+                } else {
+                    link.classList.remove('active-link');
+                }
+            });
+
+            // Update mobile drawer active states
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                const linkHref = link.getAttribute('href');
+                if (linkHref === hash || (hash === '#apartment-detail' && linkHref === '#residential')) {
+                    link.classList.add('active-link');
+                } else {
+                    link.classList.remove('active-link');
+                }
+            });
+
+            // Handle Global CTA visibility (hide on contact and detail page)
+            if(hash === '#contact' || hash === '#apartment-detail') {
+                globalCta.style.display = 'none';
+            } else {
+                globalCta.style.display = 'block';
+            }
+
+            // If navigating directly to apartment-detail and content empty, populate default
+            if(hash === '#apartment-detail') {
+                const detailContent = document.getElementById('apartment-detail-content');
+                if (detailContent && !detailContent.innerHTML.trim()) {
+                    openApartment(1);
+                    return;
+                }
+            }
+
+            // Show target page
+            targetPage.classList.add('active');
+            
+            // Scroll to top instantly & update header
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            updateHeaderStyle();
+
+            // Re-trigger animations & icons
+            setTimeout(() => {
+                triggerVisibleAnimations();
+                lucide.createIcons();
+            }, 100);
+        }
+
+        window.addEventListener('hashchange', () => {
+            navigateTo(window.location.hash);
+        });
+
+        // Horizontal Slider Drag functionality
+        const sliders = document.querySelectorAll('.overflow-x-auto');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        sliders.forEach(slider => {
+            slider.addEventListener('mousedown', (e) => {
+                isDown = true;
+                slider.classList.add('cursor-grabbing');
+                startX = e.pageX - slider.offsetLeft;
+                scrollLeft = slider.scrollLeft;
+            });
+            slider.addEventListener('mouseleave', () => {
+                isDown = false;
+                slider.classList.remove('cursor-grabbing');
+            });
+            slider.addEventListener('mouseup', () => {
+                isDown = false;
+                slider.classList.remove('cursor-grabbing');
+            });
+            slider.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - slider.offsetLeft;
+                const walk = (x - startX) * 2; 
+                slider.scrollLeft = scrollLeft - walk;
+            });
+        });
+
+        // --- Commercial Space & CAM Savings Estimator ---
+        function setPreviewCamEstimator(rsf) {
+            const headcount = Math.round(rsf / 135);
+            const savings = Math.round(rsf * 6.8);
+            const carbon = (rsf * 0.042).toFixed(1);
+
+            const hcEl = document.getElementById('cam-headcount');
+            const svEl = document.getElementById('cam-savings');
+            const cbEl = document.getElementById('cam-carbon');
+
+            if (hcEl) hcEl.textContent = `~${headcount} Desks`;
+            if (svEl) svEl.textContent = `$${savings.toLocaleString()}`;
+            if (cbEl) cbEl.textContent = `${carbon} Tons/Yr`;
+
+            // Update button styles
+            const btns = document.querySelectorAll('.cam-rsf-btn');
+            btns.forEach(btn => {
+                if (btn.textContent.includes(rsf.toLocaleString())) {
+                    btn.className = "cam-rsf-btn px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer bg-brand-accent text-zinc-950 font-black shadow-lg shadow-brand-accent/30";
+                } else {
+                    btn.className = "cam-rsf-btn px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 cursor-pointer bg-zinc-900 text-zinc-300 hover:bg-zinc-800 border border-white/10";
+                }
+            });
+        }
+
+        // --- Residential Portfolio Filter ---
+        function filterResidentialPreview(type) {
+            const cards = document.querySelectorAll('.res-prop-card');
+            cards.forEach(card => {
+                const propType = card.getAttribute('data-property-type');
+                if (type === 'All' || propType === type) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Update filter button styling
+            const btns = document.querySelectorAll('.res-filter-btn');
+            btns.forEach(btn => {
+                if (btn.textContent.trim() === type) {
+                    btn.className = "res-filter-btn px-5 py-2 rounded-full text-xs font-semibold tracking-wider transition-all duration-300 bg-brand-accent text-zinc-950 font-black shadow-lg shadow-brand-accent/20";
+                } else {
+                    btn.className = "res-filter-btn px-5 py-2 rounded-full text-xs font-semibold tracking-wider transition-all duration-300 text-zinc-400 hover:text-white hover:bg-white/5";
+                }
+            });
+        }
+
+        window.addEventListener('load', () => {
+            observeElements();
+            navigateTo(window.location.hash);
+        });
+    </script>
+</body>
+</html>
