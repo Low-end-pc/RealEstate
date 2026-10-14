@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import NavigationBar from './components/layout/NavigationBar';
 import GlobalFooter from './components/layout/GlobalFooter';
-import ProjectStructureModal from './components/modals/ProjectStructureModal';
 
 import HomePage from './pages/HomePage';
 import VisionPage from './pages/VisionPage';
@@ -13,13 +12,10 @@ import ContactPage from './pages/ContactPage';
 
 import { useScrollObserver } from './hooks/useScrollObserver';
 import { POPULAR_RESIDENCES } from './data/propertiesData';
-import { generateAndDownloadZip } from './utils/zipExporter';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [selectedProperty, setSelectedProperty] = useState(POPULAR_RESIDENCES[0]);
-  const [isZipModalOpen, setIsZipModalOpen] = useState(false);
-  const [downloadState, setDownloadState] = useState({ loading: false, success: false, message: '' });
 
   const handleSelectProperty = (property) => {
     setSelectedProperty(property);
@@ -41,7 +37,6 @@ export default function App() {
       <NavigationBar 
         currentPage={currentPage} 
         setCurrentPage={handleNavigate} 
-        onOpenZipModal={() => setIsZipModalOpen(true)}
       />
 
       {/* Main Routed Content */}
@@ -74,15 +69,6 @@ export default function App() {
       {/* Global Footer */}
       <GlobalFooter 
         setCurrentPage={handleNavigate} 
-        onOpenZipModal={() => setIsZipModalOpen(true)}
-      />
-
-      {/* Project Structure & ZIP Exporter Modal */}
-      <ProjectStructureModal
-        isOpen={isZipModalOpen}
-        onClose={() => setIsZipModalOpen(false)}
-        onDownloadZip={() => generateAndDownloadZip(setDownloadState)}
-        downloadState={downloadState}
       />
     </div>
   );

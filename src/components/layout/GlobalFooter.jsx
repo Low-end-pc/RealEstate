@@ -1,7 +1,6 @@
 import React from 'react';
-import { Download } from 'lucide-react';
 
-export const GlobalFooter = ({ setCurrentPage, onOpenZipModal }) => {
+export const GlobalFooter = ({ setCurrentPage }) => {
   return (
     <footer className="bg-[#090a0f] text-white border-t border-white/10 pt-16 pb-12 px-4 sm:px-8 md:px-12 mt-auto">
       <div className="max-w-7xl mx-auto">
@@ -16,13 +15,6 @@ export const GlobalFooter = ({ setCurrentPage, onOpenZipModal }) => {
             <p className="text-zinc-400 text-sm font-light leading-relaxed mb-5">
               The premier asset stewardship system orchestrating high-value residential estates and commercial floor plates.
             </p>
-            <button 
-              onClick={onOpenZipModal}
-              className="text-xs uppercase tracking-widest text-[#c5a880] hover:underline flex items-center gap-1 font-bold cursor-pointer"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>Download Project ZIP</span>
-            </button>
           </div>
 
           <div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FolderTree, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
-export const NavigationBar = ({ currentPage, setCurrentPage, onOpenZipModal }) => {
+export const NavigationBar = ({ currentPage, setCurrentPage }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -63,14 +63,6 @@ export const NavigationBar = ({ currentPage, setCurrentPage, onOpenZipModal }) =
         {/* Quick Actions */}
         <div className="hidden lg:flex items-center gap-3">
           <button 
-            onClick={onOpenZipModal}
-            className="flex items-center gap-2 px-3.5 py-2 text-xs font-semibold uppercase tracking-widest border border-white/20 bg-white/5 hover:bg-white hover:text-[#090a0f] text-white transition-all duration-300 rounded-sm cursor-pointer"
-          >
-            <FolderTree className="w-3.5 h-3.5 text-[#c5a880]" />
-            <span>GitHub ZIP</span>
-          </button>
-
-          <button 
             onClick={() => { setCurrentPage('contact'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
             className="btn-editorial px-5 py-2 text-xs font-semibold uppercase tracking-widest border border-white/40 text-white cursor-pointer"
           >
@@ -116,14 +108,8 @@ export const NavigationBar = ({ currentPage, setCurrentPage, onOpenZipModal }) =
           })}
           <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
             <button 
-              onClick={() => { onOpenZipModal(); setMobileMenuOpen(false); }}
-              className="w-full py-3 text-center text-xs font-bold uppercase tracking-widest bg-white/10 text-white border border-white/20"
-            >
-              Export GitHub ZIP
-            </button>
-            <button 
               onClick={() => { setCurrentPage('contact'); setMobileMenuOpen(false); }}
-              className="w-full py-3 text-center text-xs font-bold uppercase tracking-widest bg-white text-[#090a0f]"
+              className="w-full py-3 text-center text-xs font-bold uppercase tracking-widest bg-white text-[#090a0f] cursor-pointer"
             >
               Schedule Visit
             </button>
