@@ -4,6 +4,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Completely Hide Browser Scrollbar Globally */
+html, body {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Edge, Opera */
+  width: 0 !important;
+  height: 0 !important;
+}
+
 :root {
     --brand-dark: #090a0f;
     --brand-accent: #c5a880;
@@ -138,6 +151,28 @@
   .hide-scrollbar::-webkit-scrollbar { display: none; }
   .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+  /* Draggable Residence Slider */
+  .residence-slider {
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    overscroll-behavior-x: contain;
+    scroll-behavior: smooth;
+  }
+  .residence-slider img {
+    -webkit-user-drag: none;
+    user-select: none;
+    pointer-events: none;
+  }
+  .residence-slider.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none !important;
+    scroll-behavior: auto !important;
+  }
+  .residence-slider.is-dragging > * {
+    pointer-events: none;
+  }
+
   /* Silk-smooth GPU-accelerated luxury card hover (zero jitter, 60fps) */
   .smooth-luxury-card {
     position: relative;
@@ -150,7 +185,8 @@
                 border-color 0.35s ease;
     will-change: transform, box-shadow;
   }
-  .smooth-luxury-card:hover {
+  .smooth-luxury-card:hover,
+  .smooth-luxury-card.tour-hover {
     transform: translateY(-5px) translateZ(0);
     -webkit-transform: translateY(-5px) translateZ(0);
     border-color: #c5a880 !important;
@@ -172,7 +208,8 @@
                 box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
   }
-  .btn-gold-ring:hover {
+  .btn-gold-ring:hover,
+  .btn-gold-ring.tour-hover {
     background-color: #c5a880 !important;
     color: #090a0f !important;
     border-color: #c5a880 !important;

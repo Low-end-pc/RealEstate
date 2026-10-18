@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aventine | Premier Asset Stewardship</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%23090a0f'/><rect x='2' y='2' width='60' height='60' rx='10' fill='none' stroke='%23c5a880' stroke-width='1.5' stroke-opacity='0.4'/><text x='32' y='45' font-family='Georgia,serif' font-size='38' font-weight='700' fill='%23ffffff' text-anchor='middle'>A</text><circle cx='48' cy='18' r='2.5' fill='%23c5a880'/></svg>" />
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,6 +42,18 @@
 
     <style>
         /* Base Styles */
+        html, body {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: none !important; /* Chrome, Safari, Edge, Opera */
+            width: 0 !important;
+            height: 0 !important;
+        }
+
         body {
             background-color: #ffffff;
             color: #0f1115;
@@ -81,6 +94,28 @@
         /* Hide scrollbar for the horizontal sliders */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Draggable Residence Slider */
+        .residence-slider {
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+            overscroll-behavior-x: contain;
+            scroll-behavior: smooth;
+        }
+        .residence-slider img {
+            -webkit-user-drag: none;
+            user-select: none;
+            pointer-events: none;
+        }
+        .residence-slider.is-dragging {
+            cursor: grabbing;
+            scroll-snap-type: none !important;
+            scroll-behavior: auto !important;
+        }
+        .residence-slider.is-dragging > * {
+            pointer-events: none;
+        }
 
         /* Sharp Editorial Button */
         .btn-editorial {
@@ -155,7 +190,8 @@
                         border-color 0.35s ease;
             will-change: transform, box-shadow;
         }
-        .smooth-luxury-card:hover {
+        .smooth-luxury-card:hover,
+        .smooth-luxury-card.tour-hover {
             transform: translateY(-5px) translateZ(0);
             -webkit-transform: translateY(-5px) translateZ(0);
             border-color: #c5a880 !important;
@@ -177,7 +213,8 @@
                         box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
         }
-        .btn-gold-ring:hover {
+        .btn-gold-ring:hover,
+        .btn-gold-ring.tour-hover {
             background-color: #c5a880 !important;
             color: #090a0f !important;
             border-color: #c5a880 !important;
@@ -295,13 +332,13 @@
                 <div class="max-w-7xl mx-auto pr-8 md:pr-16 mb-12 flex justify-between items-end reveal">
                     <h2 class="font-serif text-4xl">Popular Residence</h2>
                     <div class="flex gap-4 hidden md:flex">
-                        <button class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-brand-dark transition-colors"><i data-lucide="arrow-left" class="w-4 h-4"></i></button>
-                        <button class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-brand-dark transition-colors"><i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                        <button type="button" onclick="scrollResidenceSlider(-1)" aria-label="Previous residences" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-brand-dark transition-colors cursor-pointer"><i data-lucide="arrow-left" class="w-4 h-4 pointer-events-none"></i></button>
+                        <button type="button" onclick="scrollResidenceSlider(1)" aria-label="Next residences" class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-brand-dark transition-colors cursor-pointer"><i data-lucide="arrow-right" class="w-4 h-4 pointer-events-none"></i></button>
                     </div>
                 </div>
 
-                <!-- Horizontal CSS Slider -->
-                <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-12 hide-scrollbar reveal stagger-1">
+                <!-- Horizontal Draggable Slider -->
+                <div id="residence-slider" data-drag-slider class="residence-slider flex overflow-x-auto snap-x snap-mandatory gap-6 pb-12 hide-scrollbar reveal stagger-1">
                     
                     <!-- Card 1 -->
                     <div onclick="openApartment(1)" class="snap-start min-w-[320px] md:min-w-[400px] bg-brand-darker rounded-2xl overflow-hidden group cursor-pointer border border-white/5 hover:border-brand-accent/50 transition-all">
@@ -2113,7 +2150,7 @@
                                     Active: <span id="detail-room-tag-indicator">${initialRoom.title}</span>
                                 </span>
                             </div>
-                            <div class="flex items-center gap-2 overflow-x-auto pb-2 hide-scrollbar">
+                            <div class="flex flex-wrap items-center gap-2.5 pb-2">
                                 ${galleryItems.map((room, idx) => `
                                     <button
                                         onclick="setDetailRoom(${idx})"
@@ -2480,35 +2517,112 @@
             navigateTo(window.location.hash);
         });
 
-        // Horizontal Slider Drag functionality
-        const sliders = document.querySelectorAll('.overflow-x-auto');
-        let isDown = false;
-        let startX;
-        let scrollLeft;
+        // --- Residence Slider: smooth drag + arrow buttons ---
+        function scrollResidenceSlider(direction) {
+            const slider = document.getElementById('residence-slider');
+            if (!slider) return;
+            const firstCard = slider.firstElementChild;
+            const gap = parseFloat(getComputedStyle(slider).columnGap) || 24;
+            const step = firstCard ? firstCard.getBoundingClientRect().width + gap : 400;
+            const maxScroll = slider.scrollWidth - slider.clientWidth;
 
-        sliders.forEach(slider => {
-            slider.addEventListener('mousedown', (e) => {
-                isDown = true;
-                slider.classList.add('cursor-grabbing');
-                startX = e.pageX - slider.offsetLeft;
-                scrollLeft = slider.scrollLeft;
-            });
-            slider.addEventListener('mouseleave', () => {
-                isDown = false;
-                slider.classList.remove('cursor-grabbing');
-            });
-            slider.addEventListener('mouseup', () => {
-                isDown = false;
-                slider.classList.remove('cursor-grabbing');
-            });
-            slider.addEventListener('mousemove', (e) => {
+            let target = slider.scrollLeft + direction * step;
+            // Loop around at the ends
+            if (direction > 0 && slider.scrollLeft >= maxScroll - 5) target = 0;
+            if (direction < 0 && slider.scrollLeft <= 5) target = maxScroll;
+
+            slider.scrollTo({ left: target, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('[data-drag-slider]').forEach(slider => {
+            let isDown = false;
+            let moved = false;
+            let startX = 0;
+            let startScroll = 0;
+            let lastX = 0;
+            let lastTime = 0;
+            let velocity = 0;
+            let pendingX = null;
+            let rafId = null;
+            let momentumId = null;
+
+            const applyScroll = () => {
+                if (pendingX !== null) {
+                    slider.scrollLeft = startScroll - (pendingX - startX);
+                    pendingX = null;
+                }
+                rafId = null;
+            };
+
+            const endDrag = () => {
                 if (!isDown) return;
+                isDown = false;
+
+                // Gentle momentum glide, then re-enable snapping
+                const glide = () => {
+                    velocity *= 0.92;
+                    slider.scrollLeft -= velocity;
+                    if (Math.abs(velocity) > 0.5) {
+                        momentumId = requestAnimationFrame(glide);
+                    } else {
+                        slider.classList.remove('is-dragging');
+                    }
+                };
+                if (moved && Math.abs(velocity) > 1) {
+                    momentumId = requestAnimationFrame(glide);
+                } else {
+                    slider.classList.remove('is-dragging');
+                }
+            };
+
+            slider.addEventListener('pointerdown', (e) => {
+                if (e.button !== 0) return;
+                // Stop text / image selection immediately
                 e.preventDefault();
-                const x = e.pageX - slider.offsetLeft;
-                const walk = (x - startX) * 2; 
-                slider.scrollLeft = scrollLeft - walk;
+                cancelAnimationFrame(momentumId);
+                isDown = true;
+                moved = false;
+                startX = lastX = e.clientX;
+                lastTime = performance.now();
+                startScroll = slider.scrollLeft;
+                velocity = 0;
             });
+
+            window.addEventListener('pointermove', (e) => {
+                if (!isDown) return;
+                const dx = e.clientX - startX;
+                if (!moved && Math.abs(dx) > 5) {
+                    moved = true;
+                    slider.classList.add('is-dragging');
+                }
+                if (!moved) return;
+
+                const now = performance.now();
+                const dt = Math.max(now - lastTime, 1);
+                velocity = ((e.clientX - lastX) / dt) * 16;
+                lastX = e.clientX;
+                lastTime = now;
+
+                pendingX = e.clientX;
+                if (!rafId) rafId = requestAnimationFrame(applyScroll);
+            });
+
+            window.addEventListener('pointerup', endDrag);
+            window.addEventListener('pointercancel', endDrag);
+
+            // If the user dragged, block the card click so it doesn't open the apartment
+            slider.addEventListener('click', (e) => {
+                if (moved) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    moved = false;
+                }
+            }, true);
+
+            // Block native image/link ghost-drag
+            slider.addEventListener('dragstart', (e) => e.preventDefault());
         });
+
 
         // --- Commercial Space & CAM Savings Estimator ---
         function setPreviewCamEstimator(rsf) {
@@ -2558,10 +2672,183 @@
             });
         }
 
+        // --- 40-Second Automated Showcase Tour for LinkedIn Video Recording ---
+        let isPreviewTourActive = false;
+        let cancelPreviewTour = false;
+
+        function waitTour(ms) {
+            return new Promise(resolve => {
+                setTimeout(() => resolve(!cancelPreviewTour), ms);
+            });
+        }
+
+        function smoothGlidePreview(targetY, durationMs) {
+            return new Promise(resolve => {
+                if (cancelPreviewTour) {
+                    resolve(false);
+                    return;
+                }
+                const startY = window.scrollY;
+                const distance = targetY - startY;
+                const startTime = performance.now();
+                const easeInOutCubic = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+                function step(currentTime) {
+                    if (cancelPreviewTour) {
+                        resolve(false);
+                        return;
+                    }
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / durationMs, 1);
+                    const eased = easeInOutCubic(progress);
+                    window.scrollTo(0, startY + distance * eased);
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        resolve(true);
+                    }
+                }
+                requestAnimationFrame(step);
+            });
+        }
+
+        async function pulsePreviewCards(delayMs = 250) {
+            const activePage = document.querySelector('.page-section.active');
+            if (!activePage) return;
+            const cards = Array.from(activePage.querySelectorAll('.smooth-luxury-card'));
+            for (let i = 0; i < Math.min(cards.length, 4); i++) {
+                if (cancelPreviewTour) return;
+                cards[i].classList.add('tour-hover');
+                await waitTour(delayMs);
+                cards[i].classList.remove('tour-hover');
+            }
+        }
+
+        function stopPreviewTour() {
+            cancelPreviewTour = true;
+            isPreviewTourActive = false;
+            document.querySelectorAll('.tour-hover').forEach(el => el.classList.remove('tour-hover'));
+            const btn = document.getElementById('auto-tour-launcher-btn');
+            if (btn) btn.style.display = 'flex';
+        }
+
+        async function startPreviewAutoTour() {
+            if (isPreviewTourActive) {
+                stopPreviewTour();
+                return;
+            }
+            cancelPreviewTour = false;
+            isPreviewTourActive = true;
+
+            const btn = document.getElementById('auto-tour-launcher-btn');
+            if (btn) btn.style.display = 'none';
+
+            // Start at top of Home
+            navigateTo('#home');
+            window.scrollTo(0, 0);
+
+            // 1.0s settle delay after button hides so screen recording starts clean
+            if (!(await waitTour(1000))) return stopPreviewTour();
+
+            // PHASE 1: HOME PAGE (0s - 7s | 7,000ms)
+            if (!(await waitTour(700))) return stopPreviewTour();
+            if (!(await smoothGlidePreview(820, 1800))) return stopPreviewTour();
+            if (!(await waitTour(700))) return stopPreviewTour();
+            if (!(await smoothGlidePreview(1950, 2600))) return stopPreviewTour();
+            if (!(await waitTour(700))) return stopPreviewTour();
+            if (!(await smoothGlidePreview(0, 500))) return stopPreviewTour();
+
+            // PHASE 2: RESIDENCES BENTO & FILTERS (7s - 13s | 6,000ms)
+            navigateTo('#residential');
+            window.scrollTo(0, 0);
+            if (!(await waitTour(600))) return stopPreviewTour();
+
+            filterResidentialPreview('Villa');
+            if (!(await waitTour(550))) return stopPreviewTour();
+            filterResidentialPreview('Penthouse');
+            if (!(await waitTour(550))) return stopPreviewTour();
+            filterResidentialPreview('All');
+            if (!(await waitTour(450))) return stopPreviewTour();
+
+            if (!(await smoothGlidePreview(1280, 3250))) return stopPreviewTour();
+            if (!(await waitTour(600))) return stopPreviewTour();
+
+            // PHASE 3: APARTMENT DETAIL & ROOM TOUR (13s - 23s | 10,000ms)
+            openApartment(1);
+            window.scrollTo(0, 0);
+            if (!(await waitTour(550))) return stopPreviewTour();
+            if (!(await smoothGlidePreview(150, 550))) return stopPreviewTour();
+
+            for (let rIdx = 1; rIdx <= 5; rIdx++) {
+                if (cancelPreviewTour) return stopPreviewTour();
+                if (typeof setDetailRoom === 'function') setDetailRoom(rIdx);
+                if (!(await waitTour(900))) return stopPreviewTour();
+            }
+
+            if (!(await smoothGlidePreview(1550, 3800))) return stopPreviewTour();
+            if (!(await waitTour(600))) return stopPreviewTour();
+
+            // PHASE 4: COMMERCIAL HUB & CAM CALCULATOR (23s - 31s | 8,000ms)
+            navigateTo('#commercial');
+            window.scrollTo(0, 0);
+            if (!(await waitTour(500))) return stopPreviewTour();
+
+            if (!(await smoothGlidePreview(1380, 2300))) return stopPreviewTour();
+            if (!(await waitTour(400))) return stopPreviewTour();
+
+            setPreviewCamEstimator(15000);
+            if (!(await waitTour(700))) return stopPreviewTour();
+            setPreviewCamEstimator(75000);
+            if (!(await waitTour(700))) return stopPreviewTour();
+            setPreviewCamEstimator(120000);
+            if (!(await waitTour(700))) return stopPreviewTour();
+
+            if (!(await smoothGlidePreview(2050, 1400))) return stopPreviewTour();
+            await pulsePreviewCards(250);
+            if (!(await waitTour(300))) return stopPreviewTour();
+
+            // PHASE 5: VISION PAGE & 4 PILLARS (31s - 36s | 5,000ms)
+            navigateTo('#vision');
+            window.scrollTo(0, 0);
+            if (!(await waitTour(500))) return stopPreviewTour();
+
+            if (!(await smoothGlidePreview(820, 1300))) return stopPreviewTour();
+            await pulsePreviewCards(220);
+
+            if (!(await smoothGlidePreview(1950, 2320))) return stopPreviewTour();
+
+            // PHASE 6: PRICING & CONTACT FINALE (36s - 40s | 4,000ms)
+            navigateTo('#pricing');
+            window.scrollTo(0, 0);
+            if (!(await waitTour(450))) return stopPreviewTour();
+            if (!(await smoothGlidePreview(260, 1250))) return stopPreviewTour();
+            if (!(await waitTour(500))) return stopPreviewTour();
+
+            navigateTo('#contact');
+            window.scrollTo(0, 0);
+            if (!(await waitTour(1200))) return stopPreviewTour();
+
+            navigateTo('#home');
+            window.scrollTo(0, 0);
+            await waitTour(1500);
+
+            stopPreviewTour();
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.shiftKey && (e.key === 'D' || e.key === 'd')) {
+                e.preventDefault();
+                startPreviewAutoTour();
+            } else if (e.key === 'Escape' && isPreviewTourActive) {
+                stopPreviewTour();
+            }
+        });
+
         window.addEventListener('load', () => {
             observeElements();
             navigateTo(window.location.hash);
         });
     </script>
+
 </body>
 </html>

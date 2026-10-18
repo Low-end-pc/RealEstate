@@ -11,6 +11,7 @@ import PricingPage from './pages/PricingPage';
 import ContactPage from './pages/ContactPage';
 
 import { useScrollObserver } from './hooks/useScrollObserver';
+import { useAutoTour } from './hooks/useAutoTour';
 import { POPULAR_RESIDENCES } from './data/propertiesData';
 
 export default function App() {
@@ -30,6 +31,13 @@ export default function App() {
 
   // Dynamically re-bind IntersectionObserver to newly mounted DOM elements on route changes
   useScrollObserver(currentPage);
+
+  // 40-Second Automated Showcase Tour background handler (Triggerable via Shift + D)
+  useAutoTour({
+    setCurrentPage,
+    onSelectProperty: handleSelectProperty,
+    properties: POPULAR_RESIDENCES,
+  });
 
   return (
     <div className="min-h-screen bg-[#090a0f] text-white font-sans-clean selection:bg-[#c5a880] selection:text-zinc-950 flex flex-col overflow-x-hidden">

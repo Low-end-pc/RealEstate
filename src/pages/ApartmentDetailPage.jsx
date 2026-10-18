@@ -88,7 +88,7 @@ export default function ApartmentDetailPage({ property, onBack, onSelectProperty
               Active: {currentRoom.title}
             </span>
           </div>
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 hide-scrollbar">
+          <div className="flex flex-wrap items-center gap-2.5 pb-2">
             {galleryItems.map((room, idx) => (
               <button
                 key={room.id || idx}
